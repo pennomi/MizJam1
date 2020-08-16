@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seven Sins Game</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            width: 100vw;
+            height: 100vh;
+        }
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<script type="module">
+    import {SevenSinsGame} from "./jsm/game/game.js"
+
+    // Initialize the game
+    let game = new SevenSinsGame("#container");
+    game.beginGame();
+</script>
+</body>
+</html>
