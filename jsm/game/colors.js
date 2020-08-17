@@ -28,4 +28,5 @@ export const COLORS = {
 	"darkpink": "#C870A0",
 	"magenta": "#923978",
 	"purple": "#81007B",
+	"transparent": "#ffffff00",
 }

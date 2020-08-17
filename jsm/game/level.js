@@ -24,12 +24,12 @@ class Tile {
 
 const TILE_TYPES = {
 	// TODO: Gamma correct these colors
-	"0": new Tile("Air", false, COLORS.darkgray),
-	"1": new Tile("Ground", true, COLORS.black),
-	"2": new Tile("Pink", true, COLORS.darkpink),
-	"3": new Tile("Green", true, COLORS.darkgreen),
-	"4": new Tile("Blue", true, COLORS.darkblue),
-	"5": new Tile("Yellow", true, COLORS.yellow),
+	0: new Tile("Air", false, COLORS.darkgray),
+	1: new Tile("Ground", true, COLORS.black),
+	2: new Tile("Pink", true, COLORS.darkpink),
+	3: new Tile("Green", true, COLORS.darkgreen),
+	4: new Tile("Blue", true, COLORS.darkblue),
+	5: new Tile("Yellow", true, COLORS.yellow),
 }
 
 
