@@ -2,7 +2,7 @@ import * as THREE from '../thirdparty/three.module.js';
 import Stats from '../thirdparty/stats.module.js';
 import {Level} from "./level.js";
 import {COLORS} from "./colors.js";
-import {Commandments} from "./commandments.js";
+import {UI} from "./UI.js";
 
 
 export class SevenSinsGame {
@@ -99,11 +99,11 @@ export class SevenSinsGame {
 
 	beginGame() {
 		// Load the commandment tablet
-		this.commandments = new Commandments();
-		this.commandments.load().then((scene)=>{
+		this.ui = new UI();
+		this.ui.load().then((scene)=>{
 			scene.position.set(9, 1, 0);
 			this.uiScene.add(scene);
-			this.commandments.write("↑→↓←→→→→yolonerd⇧⇨⇩⇦");
+			this.ui.write("↑→↓←→→→→yolonerd⇧⇨⇩⇦");
 		});
 
 		// Load the first level

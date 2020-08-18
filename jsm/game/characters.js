@@ -1,5 +1,5 @@
 import * as THREE from "../thirdparty/three.module.js";
-import {GLTFLoader} from "../thirdparty/GLTFLoader.js";
+import {loadGLTF} from "./utils.js";
 
 const COMMANDS = {
 	moveLeft: 0,
@@ -24,23 +24,18 @@ export class Character {
 			throw Error("Set the GLTF url for this Character!");
 		}
 
-		return new Promise((resolve, reject) => {
-			let loader = new GLTFLoader();
-			loader.load(this.gltfUrl, gltf => {
-				// Add it to the scene
-				this.scene = gltf.scene;
-				this.scene.position.set(x, -y + 0.5, 0);
+		const gltf = await loadGLTF(this.gltfUrl);
+		this.scene = gltf.scene;
+		this.scene.position.set(x, -y + 0.5, 0);
 
-				// Set up the animation mixer to play the first animation in the GLTF if it exists
-				this.mixer = new THREE.AnimationMixer(gltf.scene);
-				if (gltf.animations.length) {
-					this.mixer.clipAction(gltf.animations[0]).play();
-				}
+		// Set up the animation mixer to play the first animation in the GLTF if it exists
+		this.mixer = new THREE.AnimationMixer(gltf.scene);
+		if (gltf.animations.length) {
+			this.mixer.clipAction(gltf.animations[0]).play();
+		}
 
-				// Return it
-				resolve(this.scene);
-			}, null, reject);
-		});
+		// Return it
+		return this.scene;
 	}
 
 	update(dt) {
