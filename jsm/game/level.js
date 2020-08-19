@@ -74,16 +74,20 @@ export class Level {
 		return this.scene;
 	}
 
-	getIdealCameraPosition() {
-		let position = new THREE.Vector3();
-		for (const c of this._characters) {
-			position.add(c.scene.position);
-		}
-		if (this._characters.length) {
-			position.divideScalar(this._characters.length);
-		}
-		position.z = 10;
-		return position;
+	setUpCamera(camera, offset = 1.0) {
+		const box = new THREE.BoxHelper(this.scene);
+		box.geometry.computeBoundingSphere();
+		const sphere = box.geometry.boundingSphere;
+		const center = box.geometry.boundingSphere.center;
+		// Diagram: https://aws1.discourse-cdn.com/standard17/uploads/threejs/original/1X/38225043b6bc3df33ebc5aa8a5e11ed73ab9efc3.png
+		const fov = camera.fov * (Math.PI / 180);  // Convert to radians
+		let cameraZ = sphere.radius / Math.tan(fov / 2);
+		camera.position.copy(center);
+		camera.position.z += cameraZ * offset;  // Multiply offset to give padding
+		camera.lookAt(center);
+		camera.updateProjectionMatrix();
+		camera.near = cameraZ / 100;
+		camera.far = cameraZ * 100;
 	}
 
 	update(dt) {

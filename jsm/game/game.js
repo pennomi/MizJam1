@@ -70,8 +70,7 @@ export class SevenSinsGame {
 		// Update the level and therefore, all of the characters
 		if (this.level !== null) {
 			this.level.update(dt);
-			let position = this.level.getIdealCameraPosition();
-			this.camera.position.copy(position);
+			this.level.setUpCamera(this.camera);
 		}
 
 		this.ui?.update();
