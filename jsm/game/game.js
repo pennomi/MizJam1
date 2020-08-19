@@ -32,23 +32,12 @@ export class SevenSinsGame {
 		// Set up the Root Scene and Camera
 		this.rootScene = new THREE.Scene();
 		this.rootScene.background = new THREE.Color(COLORS.black);
-		this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 100);
+		this.camera = new THREE.PerspectiveCamera(40, this.container.clientWidth / this.container.clientHeight, 0.01, 100);
 		this.camera.position.set(0, 0, 10);
 		this.camera.up.set(0, 1, 0);
 		this.camera.lookAt(0, 0, 0);
 
-		// Set up the UI Scene and camera
-		this.uiScene = new THREE.Scene();
-		this.uiCamera = new THREE.OrthographicCamera(
-			0, 10,
-			10 * window.innerHeight / window.innerWidth, 0,
-			0.01, 1000);
-		this.uiCamera.position.set(0, 0, 10);
-		this.uiCamera.up.set(0, 1, 0);
-		this.uiCamera.lookAt(0, 0, 0);
-
 		this.setupLighting(this.rootScene);
-		this.setupLighting(this.uiScene);
 
 		// Keep track of the active level
 		this.level = null;
@@ -57,8 +46,7 @@ export class SevenSinsGame {
 	resize() {
 		this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
 		this.camera.updateProjectionMatrix();
-		this.uiCamera.top = 10 * window.innerHeight / window.innerWidth;
-		this.uiCamera.updateProjectionMatrix();
+		this.ui?.resize(this.container.clientWidth, this.container.clientHeight);
 		this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
 	}
 
@@ -86,6 +74,8 @@ export class SevenSinsGame {
 			this.camera.position.copy(position);
 		}
 
+		this.ui?.update();
+
 		// Update the framerate display
 		this.stats.update();
 
@@ -93,16 +83,14 @@ export class SevenSinsGame {
 		this.renderer.render(this.rootScene, this.camera);
 
 		// Then render the UI on top of it
-		this.renderer.render(this.uiScene, this.uiCamera);
+		this.ui?.render(this.renderer);
 
 	}
 
 	beginGame() {
 		// Load the commandment tablet
 		this.ui = new UI();
-		this.ui.load().then((scene)=>{
-			scene.position.set(9, 1, 0);
-			this.uiScene.add(scene);
+		this.ui.load().then(()=>{
 			this.ui.write("↑→↓←→→→→yolonerd⇧⇨⇩⇦");
 		});
 

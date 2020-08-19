@@ -29,11 +29,11 @@ loadGlyphs();
 
 
 export class TypeableTexture extends THREE.CanvasTexture {
-	constructor(backgroundImageUrl) {
+	constructor(backgroundImageUrl, width, height) {
 		// Initialize the canvas
 		let hiddenCanvas = document.createElement("canvas");
-		hiddenCanvas.width = 128;
-		hiddenCanvas.height = 128;
+		hiddenCanvas.width = width;
+		hiddenCanvas.height = height;
 
 		// Initialize the texture
 		super(hiddenCanvas);
@@ -70,5 +70,8 @@ export class TypeableTexture extends THREE.CanvasTexture {
 
 			index += 1;
 		}
+
+		// Flag the texture as needing an update
+		this.needsUpdate = true;
 	}
 }
