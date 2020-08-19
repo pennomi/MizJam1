@@ -3,8 +3,6 @@ import * as THREE from "../thirdparty/three.module.js";
 
 const GLYPH_SIZE = 16;
 const GLYPH_POSITIONS = {};
-const TABLET_GLYPH_WIDTH = 4;
-const TABLET_INITIAL_POSITION = [GLYPH_SIZE * 2, GLYPH_SIZE * 2];
 function loadGlyphs() {
 	const characters =
 		"0123456789:.%\n" +
@@ -29,7 +27,7 @@ loadGlyphs();
 
 
 export class TypeableTexture extends THREE.CanvasTexture {
-	constructor(backgroundImageUrl, width, height) {
+	constructor(backgroundImageUrl, width, height, startX=0, startY=0, maxRowLength=1) {
 		// Initialize the canvas
 		let hiddenCanvas = document.createElement("canvas");
 		hiddenCanvas.width = width;
@@ -49,6 +47,10 @@ export class TypeableTexture extends THREE.CanvasTexture {
 		this.backgroundImage.src = backgroundImageUrl;
 		this.fontImage = document.createElement("img");
 		this.fontImage.src = "../data/models/ui/font.png";
+
+		this.startX = startX;
+		this.startY = startY;
+		this.maxRowLength = maxRowLength;
 	}
 
 	write(string) {
@@ -63,8 +65,8 @@ export class TypeableTexture extends THREE.CanvasTexture {
 				glyphPosition[0] * GLYPH_SIZE,
 				glyphPosition[1] * GLYPH_SIZE,
 				GLYPH_SIZE, GLYPH_SIZE,
-				index % TABLET_GLYPH_WIDTH * GLYPH_SIZE + TABLET_INITIAL_POSITION[0],
-				Math.floor(index / TABLET_GLYPH_WIDTH) * GLYPH_SIZE + TABLET_INITIAL_POSITION[1],
+				index % this.maxRowLength * GLYPH_SIZE + this.startX,
+				Math.floor(index / this.maxRowLength) * GLYPH_SIZE + this.startY,
 				GLYPH_SIZE, GLYPH_SIZE
 			);
 

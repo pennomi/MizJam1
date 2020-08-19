@@ -18,7 +18,7 @@ export class UI {
 		this.tablet = null;
 		this.commands = [];
 
-		this.texture = new TypeableTexture("../data/models/ui/tablet.png", 128, 128);
+		this.texture = new TypeableTexture("../data/models/ui/tablet.png", 128, 128, 32, 32, 4);
 
 		// Check the input modes
 		this.mode = INPUT_MODES.inputting;
