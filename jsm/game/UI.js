@@ -3,6 +3,7 @@ import {TypeableTexture} from "./typeableTexture.js";
 import {loadGLTF} from "./utils.js";
 import {UIButton} from "./button.js";
 
+const UI_ORIENTATION = new THREE.Euler(-Math.PI/16, -Math.PI/8, 0);
 
 const INPUT_MODES = {
 	locked: 0,
@@ -39,6 +40,7 @@ export class UI {
 		let dirLight = new THREE.DirectionalLight(0xffffff, 1);
 		dirLight.position.set(5, 2, 8);
 		this.scene.add(dirLight);
+		window.addEventListener('click', this.handleClickEvent.bind(this));
 	}
 
 	async load () {
@@ -46,13 +48,24 @@ export class UI {
 		const gltf = await loadGLTF("../data/models/ui/tablet.glb", this.texture);
 		this.tablet = gltf.scene;
 		this.tablet.position.set(9, 1, 0);
-		this.tablet.rotation.set(-Math.PI/16, -Math.PI/8, 0);
+		this.tablet.rotation.copy(UI_ORIENTATION);
 		this.scene.add(this.tablet);
 
-		this.buttons = [];
-		let button = new UIButton("→", ()=>{ console.log("CLICKED!") });
-		let buttonScene = await button.load();
-		this.scene.add(buttonScene);
+		this.buttons = [
+			new UIButton("←", ()=>{ console.log("CLICKED LEFT!") }),
+			new UIButton("↑", ()=>{ console.log("CLICKED UP!") }),
+			new UIButton("↓", ()=>{ console.log("CLICKED DOWN!") }),
+			new UIButton("→", ()=>{ console.log("CLICKED RIGHT!") }),
+		];
+		for (let button of this.buttons) {
+			await button.load();
+			button.scene.position.set(3 + this.buttons.indexOf(button), 1, 0);
+			button.scene.rotation.copy(UI_ORIENTATION);
+			this.scene.add(button.scene);
+		}
+		// let button = new UIButton("→", ()=>{ console.log("CLICKED!") });
+		// await button.load();
+		// this.scene.add(button.scene);
 	}
 
 	write(string) {

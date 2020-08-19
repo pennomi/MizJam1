@@ -19,7 +19,7 @@ export class SevenSinsGame {
 		this.container.appendChild(this.renderer.domElement);
 
 		// Make sure the renderer can handle a resize event
-		window.onresize = this.resize.bind(this);
+		window.addEventListener('resize', this.resize.bind(this));
 
 		// Run a framerate display
 		this.stats = new Stats();
