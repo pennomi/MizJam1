@@ -6,6 +6,15 @@ import {CHARACTER_TYPES} from "./characters.js";
 const TILE_GEOMETRY = new THREE.BoxGeometry( 1, 1, 1 );
 
 
+const GAMEMODE = {
+	levelIntroduction: 0,
+	typingInstructions: 1,
+	executingInstructions: 2,
+	levelFailure: 3,
+	levelSuccess: 4,
+}
+
+
 class Tile {
 	constructor(name, blocking, color) {
 		this.name = name;
@@ -26,7 +35,7 @@ const TILE_TYPES = {
 	// TODO: Gamma correct these colors
 	0: new Tile("Air", false, COLORS.darkgray),
 	1: new Tile("Ground", true, COLORS.black),
-	2: new Tile("Pink", true, COLORS.darkpink),
+	2: new Tile("Goal", false, COLORS.darkpink),
 	3: new Tile("Green", true, COLORS.darkgreen),
 	4: new Tile("Blue", true, COLORS.darkblue),
 	5: new Tile("Yellow", true, COLORS.yellow),
@@ -38,6 +47,9 @@ export class Level {
 		this._tiles = [];
 		this._characters = [];
 		this.scene = new THREE.Scene();
+		this.gameMode = GAMEMODE.levelIntroduction;
+		this.timeSinceGameModeChange = 0;
+		this.instructions = [];
 	}
 
 	async load(url) {
@@ -90,9 +102,100 @@ export class Level {
 		camera.far = cameraZ * 100;
 	}
 
+	blocked(position) {
+		const x = position.x;
+		const y = -position.y - 0.5;
+		if (x < 0 || x > this._tiles[0].length) {
+			return true;
+		}
+		if (y < 0 || y > this._tiles.length) {
+			return true;
+		}
+		let tile = this._tiles[y][x];
+		return tile.blocking;
+	}
+
+	changeMode(newMode) {
+		console.log("Changing to gameMode: " + newMode);
+		this.gameMode = newMode;
+		this.timeSinceGameModeChange = 0;
+	}
+
 	update(dt) {
+		this.timeSinceGameModeChange += dt;
+
+		if (this.gameMode === GAMEMODE.levelIntroduction) {
+			this.handleIntroductionMode();
+		} else if (this.gameMode === GAMEMODE.typingInstructions) {
+			this.handleTypingMode();
+		} else if (this.gameMode === GAMEMODE.executingInstructions) {
+			this.handleExecutionMode();
+		} else if (this.gameMode === GAMEMODE.levelFailure) {
+			this.handleFailure();
+		} else if (this.gameMode === GAMEMODE.levelSuccess) {
+			this.handleSuccess();
+		}
+
+		// Make the characters do their thing
 		for (const char of this._characters) {
 			char.update(dt);
+		}
+	}
+
+	handleIntroductionMode() {
+		// console.log("We're showing a beautiful cutscene here, probably.");
+		if (this.timeSinceGameModeChange > 1.0) {
+			this.changeMode(GAMEMODE.typingInstructions);
+		}
+	}
+
+	handleTypingMode() {
+		if (this.timeSinceGameModeChange > 1.0) {
+			this.instructions = "→→↑→→↓←←←".split("");
+			this.changeMode(GAMEMODE.executingInstructions);
+		}
+	}
+
+	handleExecutionMode() {
+		// Check for failure condition and win condition
+
+		// If any character is moving, cancel out immediately
+		for (const char of this._characters) {
+			if (char.isMoving) {
+				return;
+			}
+		}
+
+		// Otherwise, tell every character to execute the next instruction
+		const next = this.instructions.shift();
+
+		// If there's not another instruction, you failed.
+		if (next === undefined) {
+			// There are no more instructions, therefore we've failed.
+			console.log("Ran out of instructions; level failed.");
+			this.changeMode(GAMEMODE.levelFailure);
+			return;
+		}
+
+		// Run a first pass to see where each character WANTS to go
+		console.log("Executing instruction: " + next);
+		for (const char of this._characters) {
+			let target = char.execute(next, this);
+		}
+	}
+
+	handleFailure() {
+		console.log("You lose the level apparently");
+		if (this.timeSinceGameModeChange > 1.0) {
+			// TODO: Reload the level
+			this.changeMode(GAMEMODE.levelIntroduction);
+		}
+	}
+
+	handleSuccess() {
+		console.log("I guess you win or something");
+		if (this.timeSinceGameModeChange > 1.0) {
+			console.log("I really should send you to the next level");
 		}
 	}
 }
