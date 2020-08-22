@@ -253,20 +253,6 @@ class Pride extends Character {
 		await this.faceLeft();
 		return await this._move(new THREE.Vector3(-1, 0, 0), level);
 	}
-
-	async moveUp (level) {
-		return await this._move(new THREE.Vector3(0, -1, 0), level);
-	}
-
-	async moveDown (level) {
-		// If we are on a ladder, climb up.
-		if (level.isClimbable(this.scene.position)) {
-			return await this._move(new THREE.Vector3(0, 1, 0), level);
-		}
-
-		// Otherwise, jump the direction we are facing
-		return await this.jump(level);
-	}
 }
 
 
