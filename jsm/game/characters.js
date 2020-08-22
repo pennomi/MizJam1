@@ -17,6 +17,7 @@ const FACING = {
 
 
 const CHARACTER_SPEED = 2;
+const CHARACTER_ROTATION_SPEED = Math.PI * 2;
 
 
 export class Character {
@@ -146,10 +147,12 @@ export class Character {
 	}
 
 	async moveLeft (level) {
+		await this.faceLeft();
 		return await this._move(new THREE.Vector3(-1, 0, 0), level);
 	}
 
 	async moveRight (level) {
+		await this.faceRight();
 		return await this._move(new THREE.Vector3(1, 0, 0), level);
 	}
 
@@ -184,7 +187,7 @@ export class Character {
 		}
 
 		// Second half of the jump
-		await this._move(new THREE.Vector3(1, -1, 0), level);
+		await this._move(new THREE.Vector3(this.faceDirection, -1, 0), level);
 	}
 
 	async moveGravity (level) {
@@ -205,6 +208,29 @@ export class Character {
 			await this._move(new THREE.Vector3(0, -1, 0), level, 4.0);
 		}
 	}
+
+	async faceLeft() {
+		this.faceDirection = FACING.left;
+		await this._waitForRotation(Math.PI, CHARACTER_ROTATION_SPEED)
+	}
+
+	async faceRight() {
+		this.faceDirection = FACING.right;
+		await this._waitForRotation(0, -CHARACTER_ROTATION_SPEED);
+	}
+
+	async _waitForRotation(targetRotation, speed) {
+		while (this.scene.rotation.y !== targetRotation) {
+			let dt = await this.waitForNextFrame();
+			let localSpeed = speed * dt;
+			const distance = targetRotation - this.scene.rotation.y;
+			if (Math.abs(localSpeed) < Math.abs(distance)) {
+				this.scene.rotation.set(0, this.scene.rotation.y + localSpeed, 0);
+			} else {
+				this.scene.rotation.set(0, targetRotation, 0);
+			}
+		}
+	}
 }
 
 class Prophet extends Character {
@@ -220,10 +246,12 @@ class Pride extends Character {
 	}
 
 	async moveLeft (level) {
+		await this.faceRight();
 		return await this._move(new THREE.Vector3(1, 0, 0), level);
 	}
 
 	async moveRight (level) {
+		await this.faceLeft();
 		return await this._move(new THREE.Vector3(-1, 0, 0), level);
 	}
 
