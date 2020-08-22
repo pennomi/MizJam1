@@ -4,11 +4,13 @@ import {TypeableTexture} from "./typeableTexture.js";
 
 
 export class UIButton {
-	constructor(text, activeText, onclick) {
+	constructor(position, text, activeText, keyCodes, onclick) {
 		this.scene = new THREE.Scene();
+		this.initialPosition = position;
 		this.texture = new TypeableTexture("../data/models/ui/button.png", 16, 16);
 		this.character = text;
 		this.activeCharacter = activeText;
+		this.keyCodes = keyCodes;
 		this.onclick = onclick;
 	}
 
@@ -23,6 +25,7 @@ export class UIButton {
 	async load() {
 		const gltf = await loadGLTF("../data/models/ui/button.glb", this.texture);
 		this.scene = gltf.scene;
+		this.scene.position.set(this.initialPosition[0], this.initialPosition[1], 0);
 		this.scene.userData.button = this;
 		this.texture.write(this.character);
 		return this.scene;

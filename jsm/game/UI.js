@@ -44,6 +44,7 @@ export class UI {
 		dirLight.position.set(5, 2, 8);
 		this.scene.add(dirLight);
 		window.addEventListener('click', this.handleClickEvent.bind(this));
+		window.addEventListener('keydown', this.handleKeyEvent.bind(this));
 
 		this.commands = [];
 	}
@@ -61,15 +62,14 @@ export class UI {
 		this.scene.add(this.tablet);
 
 		this.buttons = [
-			new UIButton("←", "⇦", ()=>{ this.appendCommand("←") }),
-			new UIButton("↑", "⇧", ()=>{ this.appendCommand("↑") }),
-			new UIButton("↓", "⇩", ()=>{ this.appendCommand("↓") }),
-			new UIButton("→", "⇨", ()=>{ this.appendCommand("→") }),
-			new UIButton("×", "×", this.deleteCommand.bind(this)),
+			new UIButton([1, 1], "←", "⇦", [37, 65], ()=>{ this.appendCommand("←") }),
+			new UIButton([2, 2], "↑", "⇧", [38, 87], ()=>{ this.appendCommand("↑") }),
+			new UIButton([2, 1], "↓", "⇩", [40, 83], ()=>{ this.appendCommand("↓") }),
+			new UIButton([3, 1], "→", "⇨", [39, 68], ()=>{ this.appendCommand("→") }),
+			new UIButton([4, 1], "×", "×", [8, 46], this.deleteCommand.bind(this)),
 		];
 		for (let button of this.buttons) {
 			await button.load();
-			button.scene.position.set(3 + this.buttons.indexOf(button), 1, 0);
 			button.scene.rotation.copy(UI_ORIENTATION);
 			this.scene.add(button.scene);
 		}
@@ -133,6 +133,24 @@ export class UI {
 					button.click();
 				}
 				clickedButtons[button.scene.uuid] = true;
+			}
+		}
+	}
+
+	handleKeyEvent(event) {
+		event.preventDefault();
+		if (this.mode !== this.INPUT_MODES.inputting) {
+			return;
+		}
+
+		if (event.keyCode === 32 || event.keyCode === 13) {
+			this.tablet.userData.button.click();
+			return;
+		}
+		for (let button of this.buttons) {
+			if (button.keyCodes.indexOf(event.keyCode) !== -1) {
+				button.click();
+				return;
 			}
 		}
 	}
