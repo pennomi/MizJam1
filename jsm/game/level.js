@@ -16,17 +16,31 @@ const GAMEMODE = {
 }
 
 
+const TILE_POSITIONING = {
+	out: 0,
+	in: -1,
+}
+
+
 class Tile {
-	constructor(name, blocking, color) {
+	constructor(name, options) {
 		this.name = name;
-		this.blocking = blocking;
-		this.color = color;
+
+		this.blocking = options.blocking || false;
+		this.climbable = options.climbable || false;
+		this.deadly = options.deadly || false;
+		this.positioning = options.blocking ? TILE_POSITIONING.out : TILE_POSITIONING.in;
+		if (options.position !== undefined) {
+			this.positioning = options.position;
+		}
+
+		this.color = options.color || COLORS.black;
 	}
 
 	createMesh(x, y) {
 		const material = new THREE.MeshStandardMaterial({color: this.color});
 		const cube = new THREE.Mesh(TILE_GEOMETRY, material);
-		cube.position.set(x, y, this.blocking ? 0 : -1);
+		cube.position.set(x, y, this.positioning);
 		return cube;
 	}
 }
@@ -34,12 +48,29 @@ class Tile {
 
 const TILE_TYPES = {
 	// TODO: Gamma correct these colors
-	0: new Tile("Air", false, COLORS.darkgray),
-	1: new Tile("Ground", true, COLORS.black),
-	2: new Tile("Goal", false, COLORS.darkpink),
-	3: new Tile("Ladder", false, COLORS.darkbrown),
-	4: new Tile("Blue", true, COLORS.darkblue),
-	5: new Tile("Yellow", true, COLORS.yellow),
+	0: new Tile("Air", {
+		color: COLORS.darkgray,
+	}),
+	1: new Tile("Ground", {
+		blocking: true,
+		color: COLORS.black,
+	}),
+	2: new Tile("Goal", {
+		color: COLORS.darkpink,
+	}),
+	3: new Tile("Ladder", {
+		climbable: true,
+		color: COLORS.darkbrown,
+	}),
+	4: new Tile("Water", {
+		deadly: true,
+		position: TILE_POSITIONING.out,
+		color: COLORS.mediumblue,
+	}),
+	5: new Tile("Destructable", {
+		blocking: true,
+		color: COLORS.yellow,
+	}),
 }
 
 
