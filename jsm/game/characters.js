@@ -24,6 +24,7 @@ export class Character {
 	gltfUrl = null;
 
 	constructor () {
+		this.name = this.constructor.name;
 		this.scene = new THREE.Scene();
 		this.mixer = undefined;
 		this.targetPosition = new THREE.Vector3();

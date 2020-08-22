@@ -110,6 +110,9 @@ export class Level {
 		// Load in entity data
 		for (let characterData of data.characters) {
 			let character = new CHARACTER_TYPES[characterData.type]();
+			if (characterData.name !== undefined) {
+				character.name = characterData.name;
+			}
 			this._characters.push(character);
 			let charScene = await character.load(...characterData.position);
 			this.scene.add(charScene);
@@ -134,6 +137,18 @@ export class Level {
 		camera.far = cameraZ * 100;
 	}
 
+	getTileFromCharacterPosition(position) {
+		const x = Math.round(position.x);
+		const y = Math.round(-position.y - 0.5);
+		if (x < 0 || x >= this._tiles[0].length) {
+			return null;
+		}
+		if (y < 0 || y >= this._tiles.length) {
+			return null;
+		}
+		return this._tiles[y][x];
+	}
+
 	blocked(position, thisCharacter) {
 		// TODO: Is there a character in the way?
 		if (this.isCharacter(position, thisCharacter)) {
@@ -141,29 +156,37 @@ export class Level {
 		}
 
 		// Is there a tile in the way?
-		const x = Math.round(position.x);
-		const y = Math.round(-position.y - 0.5);
-		if (x < 0 || x >= this._tiles[0].length) {
+		let tile = this.getTileFromCharacterPosition(position);
+		if (tile === null) {
 			return true;
 		}
-		if (y < 0 || y >= this._tiles.length) {
-			return true;
-		}
-		let tile = this._tiles[y][x];
 		return tile.blocking;
 	}
 
 	isClimbable(position) {
-		const x = Math.round(position.x);
-		const y = Math.round(-position.y - 0.5);
-		if (x < 0 || x >= this._tiles[0].length) {
+		let tile = this.getTileFromCharacterPosition(position);
+		if (tile === null) {
 			return false;
 		}
-		if (y < 0 || y >= this._tiles.length) {
-			return false;
+		return tile.climbable;
+	}
+
+	// Sort the characters so they execute in an order where they don't interact incorrectly
+	sortCharacters(next) {
+		this._characters = this._characters.sort((a, b)=>{return a.getSortValue(next) - b.getSortValue(next);});
+	}
+
+	checkFailureStates() {
+		for (let c of this._characters) {
+			let tile = this.getTileFromCharacterPosition(c.scene.position);
+			if (tile === null) {
+				return c.name + " fell into the void.";
+			} else if (tile.deadly) {
+				return c.name + " died.";
+			}
 		}
-		let tile = this._tiles[y][x];
-		return tile.name === "Ladder";
+
+		return "";  // Empty string means all is well
 	}
 
 	isCharacter(position, ignoreCharacter) {
@@ -226,18 +249,16 @@ export class Level {
 			}
 			await Promise.all(promises);
 
-			// TODO: Check for failure conditions and win conditions
-
+			let failureMessage = this.checkFailureStates();
+			if (failureMessage !== "") {
+				console.log("You lose! " + failureMessage);
+				return false;
+			}
 		}
 
 		// There are no more instructions, therefore we've failed.
 		console.log("Ran out of instructions; level failed.");
 		return false;
-	}
-
-	// Sort the characters so they execute in an order where they don't interact incorrectly
-	sortCharacters(next) {
-		this._characters = this._characters.sort((a, b)=>{return a.getSortValue(next) - b.getSortValue(next);});
 	}
 
 	async handleFailure() {
