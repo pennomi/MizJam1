@@ -14,6 +14,7 @@ export class UIButton {
 	async load() {
 		const gltf = await loadGLTF("../data/models/ui/button.glb", this.texture);
 		this.scene = gltf.scene;
+		this.scene.userData.button = this;
 		this.texture.write(this.character);
 		return this.scene;
 	}

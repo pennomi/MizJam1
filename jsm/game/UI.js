@@ -13,7 +13,8 @@ const INPUT_MODES = {
 
 
 export class UI {
-	constructor() {
+	constructor(renderer) {
+		this.renderer = renderer;
 		this.scene = new THREE.Scene();
 		this.scene.rotation.set(-Math.PI/16, -Math.PI/8, 0);
 		this.tablet = null;
@@ -33,6 +34,9 @@ export class UI {
 		this.camera.position.set(0, 0, 10);
 		this.camera.up.set(0, 1, 0);
 		this.camera.lookAt(0, 0, 0);
+
+		this.raycaster = new THREE.Raycaster();
+		this.mouse = new THREE.Vector2();
 
 		// Lighting
 		this.scene.add(new THREE.HemisphereLight(0xffffff, 0x000000, 0.4));
@@ -73,7 +77,23 @@ export class UI {
 	}
 
 	handleClickEvent(event) {
-		console.log("Click event happened");
+		event.preventDefault();
+
+		this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
+		this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
+		this.raycaster.setFromCamera( this.mouse, this.camera );
+
+		let intersects = this.raycaster.intersectObject( this.scene, true );
+		let clickedButtons = {};
+		for (let intersect of intersects) {
+			let button = intersect.object?.parent?.userData?.button;
+			if (button) {
+				if (!clickedButtons[button.scene.uuid]) {
+					button.onclick();
+				}
+				clickedButtons[button.scene.uuid] = true;
+			}
+		}
 	}
 
 	update() {
@@ -85,8 +105,8 @@ export class UI {
 		this.camera.updateProjectionMatrix();
 	}
 
-	render(renderer) {
-		renderer.render(this.scene, this.camera);
+	render() {
+		this.renderer.render(this.scene, this.camera);
 	}
 
 

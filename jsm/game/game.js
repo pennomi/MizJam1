@@ -82,13 +82,13 @@ export class SevenSinsGame {
 		this.renderer.render(this.rootScene, this.camera);
 
 		// Then render the UI on top of it
-		this.ui?.render(this.renderer);
+		this.ui?.render();
 
 	}
 
 	beginGame() {
 		// Load the commandment tablet
-		this.ui = new UI();
+		this.ui = new UI(this.renderer);
 		this.ui.load().then(()=>{
 			this.ui.write("↑→↓←→→→→yolonerd⇧⇨⇩⇦");
 		});
