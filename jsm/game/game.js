@@ -75,7 +75,7 @@ export class SevenSinsGame {
 			this.level.setUpCamera(this.camera);
 		}
 
-		this.ui?.update();
+		this.ui?.update(dt);
 
 		// Update the framerate display
 		this.stats.update();
@@ -88,12 +88,10 @@ export class SevenSinsGame {
 
 	}
 
-	beginGame() {
+	async beginGame() {
 		// Load the commandment tablet
 		this.ui = new UI(this.renderer);
-		this.ui.load().then(()=>{
-			this.ui.write("↑→↓←→→→→yolonerd⇧⇨⇩⇦");
-		});
+		await this.ui.load();
 
 		// Load the first level
 		this.loadLevel('level1');

@@ -1,6 +1,6 @@
 import * as THREE from "../thirdparty/three.module.js";
 import {TypeableTexture} from "./typeableTexture.js";
-import {loadGLTF} from "./utils.js";
+import {lerp, loadGLTF, sleep} from "./utils.js";
 import {UIButton} from "./button.js";
 
 const UI_ORIENTATION = new THREE.Euler(-Math.PI/16, -Math.PI/8, 0);
@@ -14,7 +14,8 @@ export class UI {
 		this.tablet = null;
 		this.commands = [];
 
-		this.texture = new TypeableTexture("../data/models/ui/tablet.png", 128, 128, 32, 32, 4);
+		this.tabletTexture = new TypeableTexture("../data/models/ui/tablet.png", 128, 128, 32, 32, 4);
+		this.billboardTexture = new TypeableTexture("../data/models/ui/billboard.png", 256, 128, 24, 24, 13);
 
 		this.INPUT_MODES = {
 			locked: 0,
@@ -47,11 +48,12 @@ export class UI {
 		window.addEventListener('keydown', this.handleKeyEvent.bind(this));
 
 		this.commands = [];
+		this.dt = 0;
 	}
 
 	async load () {
 		// Load the model
-		const gltf = await loadGLTF("../data/models/ui/tablet.glb", this.texture);
+		let gltf = await loadGLTF("../data/models/ui/tablet.glb", this.tabletTexture);
 		this.tablet = gltf.scene;
 		this.tablet.position.set(9, 1, 0);
 		this.tablet.rotation.copy(UI_ORIENTATION);
@@ -60,6 +62,7 @@ export class UI {
 			click: () => {this.mode = this.INPUT_MODES.replaying},
 		};
 		this.scene.add(this.tablet);
+		this.tabletTexture.write("");
 
 		this.buttons = [
 			new UIButton([1, 1], "←", "⇦", [37, 65], ()=>{ this.appendCommand("←") }),
@@ -76,6 +79,13 @@ export class UI {
 		// let button = new UIButton("→", ()=>{ console.log("CLICKED!") });
 		// await button.load();
 		// this.scene.add(button.scene);
+
+		gltf = await loadGLTF("../data/models/ui/billboard.glb", this.billboardTexture);
+		this.billboard = gltf.scene;
+		this.billboard.position.set(5, 5, 0);
+		this.billboard.scale.set(0, 0, 0);
+		this.billboard.rotation.copy(UI_ORIENTATION);
+		this.scene.add(this.billboard);
 	}
 
 	appendCommand(char) {
@@ -107,11 +117,49 @@ export class UI {
 		return " ";
 	}
 
+	async waitForNextFrame() {
+		// Wait for there to be a dt
+		while (this.dt === 0) {
+			await sleep(0.01);
+		}
+
+		// Then reset it and return the value
+		let dt = this.dt;
+		this.dt = 0;
+		return dt;
+	}
+
 	write(string) {
 		if (string === undefined) {
 			string = this.commands.join("");
 		}
-		this.texture.write(string);
+		this.tabletTexture.write(string);
+	}
+
+	async showBillboard(string) {
+		this.billboardTexture.write(string);
+
+		// Run the interpolation
+		let currentTime = 0;
+		let duration = 0.25;
+		while (currentTime < duration) {
+			currentTime += await this.waitForNextFrame();
+			let percentComplete = currentTime / duration;
+			let currentPosition = lerp(new THREE.Vector3(0, 0, 0), new THREE.Vector3(2, 2, 2), percentComplete);
+			this.billboard.scale.copy(currentPosition);
+		}
+	}
+
+	async hideBillboard() {
+		// Run the interpolation
+		let currentTime = 0;
+		let duration = 0.25;
+		while (currentTime < duration) {
+			currentTime += await this.waitForNextFrame();
+			let percentComplete = currentTime / duration;
+			let currentPosition = lerp(new THREE.Vector3(2, 2, 2), new THREE.Vector3(0, 0, 0), percentComplete);
+			this.billboard.scale.copy(currentPosition);
+		}
 	}
 
 	handleClickEvent(event) {
@@ -155,8 +203,8 @@ export class UI {
 		}
 	}
 
-	update() {
-		// TODO: ???
+	update(dt) {
+		this.dt = dt;
 	}
 
 	resize(width, height) {

@@ -221,21 +221,22 @@ export class Level {
 		this.running = true;
 		let proceed = false;
 		while (this.running) {
-			await this.handleIntroductionMode();
+			await this.handleIntroductionMode(ui);
 			await this.handleTypingMode(ui);
 			let succeeded = await this.handleExecutionMode(ui);
 			if (succeeded) {
-				proceed = await this.handleSuccess();
+				proceed = await this.handleSuccess(ui);
 			} else {
-				await this.handleFailure();
+				await this.handleFailure(ui, "You lose the level");
 			}
 		}
 		return proceed;
 	}
 
-	async handleIntroductionMode() {
-		console.log("TODO: Show level introduction");
-		await sleep(1.0);
+	async handleIntroductionMode(ui) {
+		await ui.showBillboard("Level instructions here!");
+		await sleep(3.0);
+		await ui.hideBillboard();
 	}
 
 	async handleTypingMode(ui) {
@@ -277,15 +278,17 @@ export class Level {
 		return false;
 	}
 
-	async handleFailure() {
-		console.log("You lose the level apparently");
-		await sleep(1.0);
+	async handleFailure(ui, failureMessage) {
+		await ui.showBillboard(failureMessage);
+		await sleep(3.0);
+		await ui.hideBillboard();
 		this.running = false; // set this after they decide to retry
 	}
 
-	async handleSuccess() {
-		console.log("I guess you win or something");
-		await sleep(1.0);
+	async handleSuccess(ui) {
+		await ui.showBillboard("You successfully passed the level!");
+		await sleep(3.0);
+		await ui.hideBillboard();
 		this.running = false;
 		return true; // return false if they opt to retry the level?
 	}
