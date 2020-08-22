@@ -85,11 +85,12 @@ export class Level {
 	}
 
 	async load(url) {
-		console.log("Loading level: "+ url);
+		console.log("Loading level: " + url);
 
 		// Load in tile data
 		let response = await fetch(url);
 		let data = await response.json();
+		this.nextLevelId = data.nextLevel;
 
 		this.scene.name = data.name;
 
@@ -189,6 +190,15 @@ export class Level {
 		return "";  // Empty string means all is well
 	}
 
+	checkWinState() {
+		for (let c of this._characters) {
+			let tile = this.getTileFromCharacterPosition(c.scene.position);
+			if (tile.name === "Goal") {
+				return true;
+			}
+		}
+	}
+
 	isCharacter(position, ignoreCharacter) {
 		for (let c of this._characters) {
 			if (c === ignoreCharacter) {
@@ -209,16 +219,18 @@ export class Level {
 
 	async runLevelRoutine(ui) {
 		this.running = true;
+		let proceed = false;
 		while (this.running) {
 			await this.handleIntroductionMode();
 			await this.handleTypingMode(ui);
 			let succeeded = await this.handleExecutionMode(ui);
 			if (succeeded) {
-				await this.handleSuccess();
+				proceed = await this.handleSuccess();
 			} else {
 				await this.handleFailure();
 			}
 		}
+		return proceed;
 	}
 
 	async handleIntroductionMode() {
@@ -254,6 +266,10 @@ export class Level {
 				console.log("You lose! " + failureMessage);
 				return false;
 			}
+
+			if (this.checkWinState()) {
+				return true;
+			}
 		}
 
 		// There are no more instructions, therefore we've failed.
@@ -264,10 +280,13 @@ export class Level {
 	async handleFailure() {
 		console.log("You lose the level apparently");
 		await sleep(1.0);
+		this.running = false; // set this after they decide to retry
 	}
 
 	async handleSuccess() {
 		console.log("I guess you win or something");
 		await sleep(1.0);
+		this.running = false;
+		return true; // return false if they opt to retry the level?
 	}
 }

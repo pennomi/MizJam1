@@ -96,14 +96,25 @@ export class SevenSinsGame {
 		});
 
 		// Load the first level
-		this.level = new Level();
-		this.level.load("../data/levels/level1.json").then((scene)=>{
-			this.rootScene.add(scene);
-			this.level.runLevelRoutine(this.ui).then(()=>console.log("Level completed, I guess."));
-		});
+		this.loadLevel('level1');
 
 		// Start the render loop
 		this.render();
+	}
+
+	loadLevel(id) {
+		this.level = new Level();
+		this.level.load("../data/levels/" + id + ".json").then(scene => {
+			this.rootScene.add(scene);
+			this.level.runLevelRoutine(this.ui).then(proceed => {
+				this.rootScene.remove(scene);
+				if (proceed) {
+					this.loadLevel(this.level.nextLevelId);
+				} else {
+					this.loadLevel(id);
+				}
+			});
+		});
 	}
 }
 
