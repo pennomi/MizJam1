@@ -147,11 +147,11 @@ export class Level {
 		}
 	}
 
-	async runLevelRoutine() {
+	async runLevelRoutine(ui) {
 		this.running = true;
 		while (this.running) {
 			await this.handleIntroductionMode();
-			await this.handleTypingMode();
+			await this.handleTypingMode(ui);
 			let succeeded = await this.handleExecutionMode();
 			if (succeeded) {
 				await this.handleSuccess();
@@ -166,10 +166,15 @@ export class Level {
 		await sleep(1.0);
 	}
 
-	async handleTypingMode() {
-		console.log("TODO: Should be collecting instructions now");
-		await sleep(1.0);
-		this.instructions = "→→↓→←←↑↓".split("");
+	async handleTypingMode(ui) {
+		ui.commands = [];
+		ui.write();
+		ui.mode = ui.INPUT_MODES.inputting;
+		while (ui.mode !== ui.INPUT_MODES.replaying) {
+			await sleep(1.0);
+		}
+		this.instructions = ui.commands.slice();
+		// this.instructions = "→→↓→←←↑↓".split("");
 	}
 
 	async handleExecutionMode() {

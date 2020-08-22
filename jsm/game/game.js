@@ -97,7 +97,7 @@ export class SevenSinsGame {
 		this.level = new Level();
 		this.level.load("../data/levels/level1.json").then((scene)=>{
 			this.rootScene.add(scene);
-			this.level.runLevelRoutine().then(()=>console.log("Level completed, I guess."));
+			this.level.runLevelRoutine(this.ui).then(()=>console.log("Level completed, I guess."));
 		});
 
 		// Start the render loop

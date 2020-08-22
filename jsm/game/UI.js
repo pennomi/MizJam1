@@ -5,12 +5,6 @@ import {UIButton} from "./button.js";
 
 const UI_ORIENTATION = new THREE.Euler(-Math.PI/16, -Math.PI/8, 0);
 
-const INPUT_MODES = {
-	locked: 0,
-	inputting: 1,
-	replaying: 2,
-}
-
 
 export class UI {
 	constructor(renderer) {
@@ -22,8 +16,13 @@ export class UI {
 
 		this.texture = new TypeableTexture("../data/models/ui/tablet.png", 128, 128, 32, 32, 4);
 
+		this.INPUT_MODES = {
+			locked: 0,
+			inputting: 1,
+			replaying: 2,
+		};
 		// Check the input modes
-		this.mode = INPUT_MODES.inputting;
+		this.mode = this.INPUT_MODES.locked;
 
 		// Set up the UI Scene and camera
 		this.scene = new THREE.Scene();
@@ -45,6 +44,8 @@ export class UI {
 		dirLight.position.set(5, 2, 8);
 		this.scene.add(dirLight);
 		window.addEventListener('click', this.handleClickEvent.bind(this));
+
+		this.commands = [];
 	}
 
 	async load () {
@@ -53,13 +54,18 @@ export class UI {
 		this.tablet = gltf.scene;
 		this.tablet.position.set(9, 1, 0);
 		this.tablet.rotation.copy(UI_ORIENTATION);
+		this.tablet.userData.button = {
+			scene: this.tablet,
+			onclick: () => {this.mode = this.INPUT_MODES.replaying},
+		};
 		this.scene.add(this.tablet);
 
 		this.buttons = [
-			new UIButton("←", ()=>{ console.log("CLICKED LEFT!") }),
-			new UIButton("↑", ()=>{ console.log("CLICKED UP!") }),
-			new UIButton("↓", ()=>{ console.log("CLICKED DOWN!") }),
-			new UIButton("→", ()=>{ console.log("CLICKED RIGHT!") }),
+			new UIButton("←", ()=>{ this.appendCommand("←") }),
+			new UIButton("↑", ()=>{ this.appendCommand("↑") }),
+			new UIButton("↓", ()=>{ this.appendCommand("↓") }),
+			new UIButton("→", ()=>{ this.appendCommand("→") }),
+			new UIButton("×", this.deleteCommand.bind(this)),
 		];
 		for (let button of this.buttons) {
 			await button.load();
@@ -72,12 +78,31 @@ export class UI {
 		// this.scene.add(button.scene);
 	}
 
+	appendCommand(char) {
+		if (this.commands.length >= 20) {
+			return;
+		}
+		this.commands.push(char);
+		this.write();
+	}
+
+	deleteCommand() {
+		this.commands.pop();
+		this.write();
+	}
+
 	write(string) {
+		if (string === undefined) {
+			string = this.commands.join("");
+		}
 		this.texture.write(string);
 	}
 
 	handleClickEvent(event) {
 		event.preventDefault();
+		if (this.mode !== this.INPUT_MODES.inputting) {
+			return;
+		}
 
 		this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
 		this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
