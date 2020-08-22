@@ -1,5 +1,5 @@
 import * as THREE from "../thirdparty/three.module.js";
-import {lerp, loadGLTF, sleep} from "./utils.js";
+import {jerp1, jerp2, lerp, loadGLTF, sleep} from "./utils.js";
 
 
 const COMMANDS = {
@@ -116,9 +116,12 @@ export class Character {
 		return moved;
 	}
 
-	async _move(direction, level, duration=null) {
+	async _move(direction, level, duration=null, interpolator=null) {
 		if (duration === null) {
 			duration = DEFAULT_MOVE_TIME;
+		}
+		if (interpolator === null) {
+			interpolator = lerp;
 		}
 
 		const target = this.scene.position.clone().add(direction);
@@ -134,7 +137,7 @@ export class Character {
 		while (currentTime < duration) {
 			currentTime += await this.waitForNextFrame();
 			let percentComplete = currentTime / duration;
-			let currentPosition = lerp(startPosition, target, percentComplete);
+			let currentPosition = interpolator(startPosition, target, percentComplete);
 			this.scene.position.copy(currentPosition);
 		}
 
@@ -174,7 +177,7 @@ export class Character {
 		}
 
 		// First half of the jump
-		await this._move(new THREE.Vector3(this.faceDirection, 1, 0), level);
+		await this._move(new THREE.Vector3(this.faceDirection, 1, 0), level, DEFAULT_MOVE_TIME, jerp1);
 
 		// If we landed on a block, don't finish the jump
 		const directlyBelow = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0))
@@ -183,7 +186,7 @@ export class Character {
 		}
 
 		// Second half of the jump
-		await this._move(new THREE.Vector3(this.faceDirection, -1, 0), level);
+		await this._move(new THREE.Vector3(this.faceDirection, -1, 0), level, DEFAULT_MOVE_TIME, jerp2);
 	}
 
 	async moveGravity (level) {
