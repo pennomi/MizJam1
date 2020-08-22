@@ -9,6 +9,7 @@ const COMMANDS = {
 	moveDown: "↓",
 	jumpLeft: "⇧",
 	jumpRight: "⇧",
+	moveGravity: ".",
 }
 
 
@@ -84,60 +85,74 @@ export class Character {
 			return this.scene.position.y;
 		} else if (command === COMMANDS.jumpRight) {
 			return this.scene.position.y;
+
+		// Handle the gravity sorter
+		} else if (command === COMMANDS.moveGravity) {
+			return this.scene.position.y;
 		}
 	}
 
 	execute (command, level) {
 		this.isMoving = true;
 		if (command === COMMANDS.moveLeft) {
-			this.moveLeft(level);
+			return this.moveLeft(level);
 		} else if (command === COMMANDS.moveRight) {
-			this.moveRight(level);
+			return this.moveRight(level);
 		} else if (command === COMMANDS.moveUp) {
-			this.moveUp(level);
+			return this.moveUp(level);
 		} else if (command === COMMANDS.moveDown) {
-			this.moveDown(level);
+			return this.moveDown(level);
 		} else if (command === COMMANDS.jumpLeft) {
-			this.jumpLeft(level);
+			return this.jumpLeft(level);
 		} else if (command === COMMANDS.jumpRight) {
-			this.jumpRight(level);
+			return this.jumpRight(level);
+		} else if (command === COMMANDS.moveGravity) {
+			return this.moveGravity(level);
 		} else {
 			throw Error("Invalid command given: `" + command + "`");
 		}
-		return this.targetPosition;
 	}
 
 	_move(direction, level) {
 		const target = this.scene.position.clone().add(direction);
 		if (level.blocked(target)) {
 			this.intendedTarget = this.scene.position.clone();
-			return;
+			return false;
 		}
 		this.targetPosition = target;
+		return true;
 	}
 
 	moveLeft (level) {
-		this._move(new THREE.Vector3(-1, 0, 0), level);
+		return this._move(new THREE.Vector3(-1, 0, 0), level);
 	}
 
 	moveRight (level) {
-		this._move(new THREE.Vector3(1, 0, 0), level);
+		return this._move(new THREE.Vector3(1, 0, 0), level);
 	}
 
 	moveUp (level) {
-		this._move(new THREE.Vector3(0, 1, 0), level);
+		return this._move(new THREE.Vector3(0, 1, 0), level);
 	}
 
 	moveDown (level) {
-		this._move(new THREE.Vector3(0, -1, 0), level);
+		return this._move(new THREE.Vector3(0, -1, 0), level);
 	}
 
 	jumpLeft (level) {
-
+		return false;
 	}
 
 	jumpRight (level) {
+		return false;
+	}
 
+	moveGravity (level) {
+		// If currently on a ladder square, don't fall
+		if (level.isClimbable(this.scene.position.clone())) {
+			return false;
+		}
+		return this._move(new THREE.Vector3(0, -1, 0), level);
 	}
 }
 

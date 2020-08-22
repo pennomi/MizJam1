@@ -36,7 +36,7 @@ const TILE_TYPES = {
 	0: new Tile("Air", false, COLORS.darkgray),
 	1: new Tile("Ground", true, COLORS.black),
 	2: new Tile("Goal", false, COLORS.darkpink),
-	3: new Tile("Green", true, COLORS.darkgreen),
+	3: new Tile("Ladder", false, COLORS.darkbrown),
 	4: new Tile("Blue", true, COLORS.darkblue),
 	5: new Tile("Yellow", true, COLORS.yellow),
 }
@@ -123,6 +123,19 @@ export class Level {
 		return tile.blocking;
 	}
 
+	isClimbable(position) {
+		const x = Math.round(position.x);
+		const y = Math.round(-position.y - 0.5);
+		if (x < 0 || x >= this._tiles[0].length) {
+			return false;
+		}
+		if (y < 0 || y >= this._tiles.length) {
+			return false;
+		}
+		let tile = this._tiles[y][x];
+		return tile.name === "Ladder";
+	}
+
 	changeMode(newMode) {
 		console.log("Changing to gameMode: " + newMode);
 		this.gameMode = newMode;
@@ -159,7 +172,7 @@ export class Level {
 
 	handleTypingMode() {
 		if (this.timeSinceGameModeChange > 1.0) {
-			this.instructions = "→→←←↑↓".split("");
+			this.instructions = "→...→...↓...→...←...←...↑...↓...".split("");
 			this.changeMode(GAMEMODE.executingInstructions);
 		}
 	}
