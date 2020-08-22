@@ -177,10 +177,8 @@ export class Level {
 	}
 
 	async handleExecutionMode(ui) {
-		var instructionIndex = 0;
+		let instructionIndex = 0;
 		for (const next of this.instructions) {
-			console.log("Executing instruction: " + next);
-
 			ui.commands[instructionIndex++] = ui.mapExecutedCommand(next);
 			ui.write();
 			// Wait for all the characters to finish their moves

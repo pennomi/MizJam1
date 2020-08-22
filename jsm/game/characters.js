@@ -1,5 +1,5 @@
 import * as THREE from "../thirdparty/three.module.js";
-import {loadGLTF, sleep} from "./utils.js";
+import {lerp, loadGLTF, sleep} from "./utils.js";
 
 
 const COMMANDS = {
@@ -16,7 +16,7 @@ const FACING = {
 }
 
 
-const CHARACTER_SPEED = 2;
+const DEFAULT_MOVE_TIME = 0.5;
 const CHARACTER_ROTATION_SPEED = Math.PI * 2;
 
 
@@ -116,9 +116,9 @@ export class Character {
 		return moved;
 	}
 
-	async _move(direction, level, speed=null) {
-		if (speed === null) {
-			speed = CHARACTER_SPEED;
+	async _move(direction, level, duration=null) {
+		if (duration === null) {
+			duration = DEFAULT_MOVE_TIME;
 		}
 
 		const target = this.scene.position.clone().add(direction);
@@ -128,18 +128,14 @@ export class Character {
 			return false;
 		}
 
-		while (!this.scene.position.equals(target)) {
-			let dt = await this.waitForNextFrame();
-			const direction = target.clone().sub(this.scene.position);
-			let magnitude = direction.length();
-			const maxMovement = speed * dt;
-			if (magnitude > maxMovement) {
-				direction.normalize();
-				direction.multiplyScalar(maxMovement);
-				this.scene.position.add(direction);
-			} else {
-				this.scene.position.copy(target);
-			}
+		// Run the interpolation
+		let currentTime = 0;
+		const startPosition = this.scene.position.clone();
+		while (currentTime < duration) {
+			currentTime += await this.waitForNextFrame();
+			let percentComplete = currentTime / duration;
+			let currentPosition = lerp(startPosition, target, percentComplete);
+			this.scene.position.copy(currentPosition);
 		}
 
 		// Tell the output that we did move
@@ -205,7 +201,7 @@ export class Character {
 			if (level.blocked(gravityTarget) || level.isClimbable(gravityTarget)) {
 				break;
 			}
-			await this._move(new THREE.Vector3(0, -1, 0), level, 4.0);
+			await this._move(new THREE.Vector3(0, -1, 0), level, 0.25);
 		}
 	}
 

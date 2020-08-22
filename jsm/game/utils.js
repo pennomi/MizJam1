@@ -23,3 +23,21 @@ export async function loadGLTF(url, overrideTexture=null) {
 export async function sleep(seconds) {
   return new Promise(resolve => setTimeout(resolve, Math.floor(seconds * 1000)));
 }
+
+
+// Linear interpolator for Vector3s
+export function lerp(start=new THREE.Vector3(), target=new THREE.Vector3(), percent) {
+	start = start.clone();
+	target = target.clone();
+	if (percent >= 1) {
+		return target;
+	}
+	percent = Math.max(percent, 0);
+	return start.add(target.sub(start).multiplyScalar(percent));
+}
+
+
+// Jump interpolator for Vector3s
+export function jerp(current, target, dt) {
+
+}
