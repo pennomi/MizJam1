@@ -47,7 +47,7 @@ export function jerp1(start=new THREE.Vector3(), target=new THREE.Vector3(), per
 	percent = Math.max(percent, 0);
 
 	let offset = target.sub(start);
-	offset.x = offset.x * (1-Math.cos(Math.PI/2 * percent));
+	offset.x = offset.x * percent;
 	offset.y = offset.y * Math.sin(Math.PI/2 * percent);
 	return start.add(offset);
 }
@@ -61,7 +61,7 @@ export function jerp2(start=new THREE.Vector3(), target=new THREE.Vector3(), per
 	percent = Math.max(percent, 0);
 
 	let offset = target.sub(start);
-	offset.x = offset.x * Math.sin(Math.PI/2 * percent);
+	offset.x = offset.x * percent;
 	offset.y = offset.y * (1-Math.cos(Math.PI/2 * percent));
 	return start.add(offset);
 }
