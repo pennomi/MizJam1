@@ -2,6 +2,9 @@
   "name": "Level 1",
   "tiles": "111111111111111\n100000000000001\n100000000000001\n100000000000001\n100011000000001\n100000000500021\n111111001110111\n111111441114111\n111111111111111\n111111111111111",
   "characters": [
-    {"type": "prophet", "position": [2, 6]}
+    {"type": "prophet", "position": [2, 6]},
+    {"type": "pride", "position": [3, 6]},
+    {"type": "prophet", "position": [6, 6]},
+    {"type": "prophet", "position": [6, 5]}
   ]
 }

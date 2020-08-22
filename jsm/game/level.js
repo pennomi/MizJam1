@@ -103,12 +103,20 @@ export class Level {
 	}
 
 	blocked(position) {
-		const x = position.x;
-		const y = -position.y - 0.5;
-		if (x < 0 || x > this._tiles[0].length) {
+		// Is there a character in the way?
+		for (let c of this._characters) {
+			if (c.targetPosition.equals(position)) {
+				return true;
+			}
+		}
+
+		// Is there a tile in the way?
+		const x = Math.round(position.x);
+		const y = Math.round(-position.y - 0.5);
+		if (x < 0 || x >= this._tiles[0].length) {
 			return true;
 		}
-		if (y < 0 || y > this._tiles.length) {
+		if (y < 0 || y >= this._tiles.length) {
 			return true;
 		}
 		let tile = this._tiles[y][x];
@@ -138,7 +146,7 @@ export class Level {
 
 		// Make the characters do their thing
 		for (const char of this._characters) {
-			char.update(dt);
+			char.update(dt, this);
 		}
 	}
 
@@ -151,7 +159,7 @@ export class Level {
 
 	handleTypingMode() {
 		if (this.timeSinceGameModeChange > 1.0) {
-			this.instructions = "→→↑→→↓←←←".split("");
+			this.instructions = "→→←←↑↓".split("");
 			this.changeMode(GAMEMODE.executingInstructions);
 		}
 	}
@@ -177,11 +185,16 @@ export class Level {
 			return;
 		}
 
-		// Run a first pass to see where each character WANTS to go
 		console.log("Executing instruction: " + next);
+		this.sortCharacters(next);
 		for (const char of this._characters) {
-			let target = char.execute(next, this);
+			char.execute(next, this);
 		}
+	}
+
+	// Sort the characters so they execute in an order where they don't interact incorrectly
+	sortCharacters(next) {
+		this._characters = this._characters.sort((a, b)=>{return a.getSortValue(next) - b.getSortValue(next);});
 	}
 
 	handleFailure() {

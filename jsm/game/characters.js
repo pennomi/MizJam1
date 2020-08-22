@@ -69,6 +69,24 @@ export class Character {
 		}
 	}
 
+	getSortValue(command) {
+		if (command === COMMANDS.moveLeft) {
+			return this.scene.position.x;
+		} else if (command === COMMANDS.moveRight) {
+			return -this.scene.position.x;
+		} else if (command === COMMANDS.moveDown) {
+			return this.scene.position.y;
+		} else if (command === COMMANDS.moveUp) {
+			return -this.scene.position.y;
+
+		// For jumps, always handle the highest characters first? TODO: Check this
+		} else if (command === COMMANDS.jumpLeft) {
+			return this.scene.position.y;
+		} else if (command === COMMANDS.jumpRight) {
+			return this.scene.position.y;
+		}
+	}
+
 	execute (command, level) {
 		this.isMoving = true;
 		if (command === COMMANDS.moveLeft) {
@@ -89,40 +107,29 @@ export class Character {
 		return this.targetPosition;
 	}
 
-	moveLeft (level) {
-		const target = this.scene.position.clone().add(new THREE.Vector3(-1, 0, 0));
+	_move(direction, level) {
+		const target = this.scene.position.clone().add(direction);
 		if (level.blocked(target)) {
-			this.targetPosition = this.scene.position.clone();
+			this.intendedTarget = this.scene.position.clone();
 			return;
 		}
 		this.targetPosition = target;
+	}
+
+	moveLeft (level) {
+		this._move(new THREE.Vector3(-1, 0, 0), level);
 	}
 
 	moveRight (level) {
-		const target = this.scene.position.clone().add(new THREE.Vector3(1, 0, 0));
-		if (level.blocked(target)) {
-			this.targetPosition = this.scene.position.clone();
-			return;
-		}
-		this.targetPosition = target;
+		this._move(new THREE.Vector3(1, 0, 0), level);
 	}
 
 	moveUp (level) {
-		const target = this.scene.position.clone().add(new THREE.Vector3(0, 1, 0));
-		if (level.blocked(target)) {
-			this.targetPosition = this.scene.position.clone();
-			return;
-		}
-		this.targetPosition = target;
+		this._move(new THREE.Vector3(0, 1, 0), level);
 	}
 
 	moveDown (level) {
-		const target = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0));
-		if (level.blocked(target)) {
-			this.targetPosition = this.scene.position.clone();
-			return;
-		}
-		this.targetPosition = target;
+		this._move(new THREE.Vector3(0, -1, 0), level);
 	}
 
 	jumpLeft (level) {
@@ -140,6 +147,22 @@ class Prophet extends Character {
 
 class Pride extends Character {
 	gltfUrl = "../data/models/characters/pride.glb";
+
+	moveLeft (level) {
+		this._move(new THREE.Vector3(1, 0, 0), level);
+	}
+
+	moveRight (level) {
+		this._move(new THREE.Vector3(-1, 0, 0), level);
+	}
+
+	moveUp (level) {
+		this._move(new THREE.Vector3(0, -1, 0), level);
+	}
+
+	moveDown (level) {
+		this._move(new THREE.Vector3(0, 1, 0), level);
+	}
 }
 
 
