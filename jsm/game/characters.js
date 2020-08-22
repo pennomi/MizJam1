@@ -9,7 +9,6 @@ const COMMANDS = {
 	moveDown: "↓",
 	jumpLeft: "⇧",
 	jumpRight: "⇧",
-	moveGravity: ".",
 }
 
 
@@ -89,26 +88,33 @@ export class Character {
 	}
 
 	async execute (command, level) {
+		let moved = false;
 		if (command === COMMANDS.moveLeft) {
-			return await this.moveLeft(level);
+			moved = await this.moveLeft(level);
 		} else if (command === COMMANDS.moveRight) {
-			return await this.moveRight(level);
+			moved = await this.moveRight(level);
 		} else if (command === COMMANDS.moveUp) {
-			return await this.moveUp(level);
+			moved = await this.moveUp(level);
 		} else if (command === COMMANDS.moveDown) {
-			return await this.moveDown(level);
+			moved = await this.moveDown(level);
 		} else if (command === COMMANDS.jumpLeft) {
-			return await this.jumpLeft(level);
+			moved = await this.jumpLeft(level);
 		} else if (command === COMMANDS.jumpRight) {
-			return await this.jumpRight(level);
+			moved = await this.jumpRight(level);
 		} else if (command === COMMANDS.moveGravity) {
-			return await this.moveGravity(level);
+			moved = await this.moveGravity(level);
 		} else {
 			throw Error("Invalid command given: `" + command + "`");
 		}
+		await this.moveGravity(level);
+		return moved;
 	}
 
-	async _move(direction, level) {
+	async _move(direction, level, speed=null) {
+		if (speed === null) {
+			speed = CHARACTER_SPEED;
+		}
+
 		const target = this.scene.position.clone().add(direction);
 		this.targetPosition = target;
 		if (level.blocked(target, this)) {
@@ -116,15 +122,11 @@ export class Character {
 			return false;
 		}
 
-		console.log("Trying to move");
-
-
 		while (!this.scene.position.equals(target)) {
-			console.log("Trying to move");
 			let dt = await this.waitForNextFrame();
 			const direction = target.clone().sub(this.scene.position);
 			let magnitude = direction.length();
-			const maxMovement = CHARACTER_SPEED * dt;
+			const maxMovement = speed * dt;
 			if (magnitude > maxMovement) {
 				direction.normalize();
 				direction.multiplyScalar(maxMovement);
@@ -167,7 +169,15 @@ export class Character {
 		if (level.isClimbable(this.scene.position.clone())) {
 			return false;
 		}
-		return await this._move(new THREE.Vector3(0, -1, 0), level);
+
+		// Try falling due to gravity
+		while (true) {
+			let gravityTarget = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0));
+			if (level.blocked(gravityTarget)) {
+				break;
+			}
+			await this._move(new THREE.Vector3(0, -1, 0), level, 4.0);
+		}
 	}
 }
 

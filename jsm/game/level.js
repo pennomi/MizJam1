@@ -49,7 +49,6 @@ export class Level {
 		this._characters = [];
 		this.scene = new THREE.Scene();
 		this.gameMode = GAMEMODE.levelIntroduction;
-		this.timeSinceGameModeChange = 0;
 		this.instructions = [];
 		this.running = true;
 	}
@@ -141,27 +140,7 @@ export class Level {
 		return tile.name === "Ladder";
 	}
 
-	changeMode(newMode) {
-		console.log("Changing to gameMode: " + newMode);
-		this.gameMode = newMode;
-		this.timeSinceGameModeChange = 0;
-	}
-
 	update(dt) {
-		// this.timeSinceGameModeChange += dt;
-		//
-		// if (this.gameMode === GAMEMODE.levelIntroduction) {
-		// 	this.handleIntroductionMode();
-		// } else if (this.gameMode === GAMEMODE.typingInstructions) {
-		// 	this.handleTypingMode();
-		// } else if (this.gameMode === GAMEMODE.executingInstructions) {
-		// 	this.handleExecutionMode();
-		// } else if (this.gameMode === GAMEMODE.levelFailure) {
-		// 	this.handleFailure();
-		// } else if (this.gameMode === GAMEMODE.levelSuccess) {
-		// 	this.handleSuccess();
-		// }
-
 		// Make the characters do their thing
 		for (const char of this._characters) {
 			char.update(dt, this);
@@ -190,7 +169,7 @@ export class Level {
 	async handleTypingMode() {
 		console.log("TODO: Should be collecting instructions now");
 		await sleep(1.0);
-		this.instructions = "→...→...↓...→...←...←...↑...↓...".split("");
+		this.instructions = "→→↓→←←↑↓".split("");
 	}
 
 	async handleExecutionMode() {
@@ -219,18 +198,13 @@ export class Level {
 		this._characters = this._characters.sort((a, b)=>{return a.getSortValue(next) - b.getSortValue(next);});
 	}
 
-	handleFailure() {
+	async handleFailure() {
 		console.log("You lose the level apparently");
-		if (this.timeSinceGameModeChange > 1.0) {
-			// TODO: Reload the level
-			this.changeMode(GAMEMODE.levelIntroduction);
-		}
+		await sleep(1.0);
 	}
 
-	handleSuccess() {
+	async handleSuccess() {
 		console.log("I guess you win or something");
-		if (this.timeSinceGameModeChange > 1.0) {
-			console.log("I really should send you to the next level");
-		}
+		await sleep(1.0);
 	}
 }
