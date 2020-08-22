@@ -152,7 +152,7 @@ export class Level {
 		while (this.running) {
 			await this.handleIntroductionMode();
 			await this.handleTypingMode(ui);
-			let succeeded = await this.handleExecutionMode();
+			let succeeded = await this.handleExecutionMode(ui);
 			if (succeeded) {
 				await this.handleSuccess();
 			} else {
@@ -176,10 +176,13 @@ export class Level {
 		this.instructions = ui.commands.slice();
 	}
 
-	async handleExecutionMode() {
+	async handleExecutionMode(ui) {
+		var instructionIndex = 0;
 		for (const next of this.instructions) {
 			console.log("Executing instruction: " + next);
 
+			ui.commands[instructionIndex++] = ui.mapExecutedCommand(next);
+			ui.write();
 			// Wait for all the characters to finish their moves
 			this.sortCharacters(next);
 			let promises = [];

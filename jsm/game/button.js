@@ -4,11 +4,20 @@ import {TypeableTexture} from "./typeableTexture.js";
 
 
 export class UIButton {
-	constructor(text, onclick) {
+	constructor(text, activeText, onclick) {
 		this.scene = new THREE.Scene();
 		this.texture = new TypeableTexture("../data/models/ui/button.png", 16, 16);
 		this.character = text;
+		this.activeCharacter = activeText;
 		this.onclick = onclick;
+	}
+
+	click(ev) {
+		this.texture.write(this.activeCharacter);
+		setTimeout(() => {
+			this.texture.write(this.character);
+		}, 200);
+		this.onclick(ev);
 	}
 
 	async load() {

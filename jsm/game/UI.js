@@ -56,16 +56,16 @@ export class UI {
 		this.tablet.rotation.copy(UI_ORIENTATION);
 		this.tablet.userData.button = {
 			scene: this.tablet,
-			onclick: () => {this.mode = this.INPUT_MODES.replaying},
+			click: () => {this.mode = this.INPUT_MODES.replaying},
 		};
 		this.scene.add(this.tablet);
 
 		this.buttons = [
-			new UIButton("←", ()=>{ this.appendCommand("←") }),
-			new UIButton("↑", ()=>{ this.appendCommand("↑") }),
-			new UIButton("↓", ()=>{ this.appendCommand("↓") }),
-			new UIButton("→", ()=>{ this.appendCommand("→") }),
-			new UIButton("×", this.deleteCommand.bind(this)),
+			new UIButton("←", "⇦", ()=>{ this.appendCommand("←") }),
+			new UIButton("↑", "⇧", ()=>{ this.appendCommand("↑") }),
+			new UIButton("↓", "⇩", ()=>{ this.appendCommand("↓") }),
+			new UIButton("→", "⇨", ()=>{ this.appendCommand("→") }),
+			new UIButton("×", "×", this.deleteCommand.bind(this)),
 		];
 		for (let button of this.buttons) {
 			await button.load();
@@ -91,6 +91,22 @@ export class UI {
 		this.write();
 	}
 
+	mapExecutedCommand(char) {
+		if (char === "←") {
+			return "⇦";
+		}
+		if (char === "→") {
+			return "⇨";
+		}
+		if (char === "↑") {
+			return "⇧";
+		}
+		if (char === "↓") {
+			return "⇩";
+		}
+		return " ";
+	}
+
 	write(string) {
 		if (string === undefined) {
 			string = this.commands.join("");
@@ -114,7 +130,7 @@ export class UI {
 			let button = intersect.object?.parent?.userData?.button;
 			if (button) {
 				if (!clickedButtons[button.scene.uuid]) {
-					button.onclick();
+					button.click();
 				}
 				clickedButtons[button.scene.uuid] = true;
 			}
