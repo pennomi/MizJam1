@@ -7,8 +7,12 @@ const COMMANDS = {
 	moveRight: "→",
 	moveUp: "↑",
 	moveDown: "↓",
-	jumpLeft: "⇧",
-	jumpRight: "⇧",
+}
+
+
+const FACING = {
+	right: 1,
+	left: -1,
 }
 
 
@@ -22,6 +26,7 @@ export class Character {
 		this.scene = new THREE.Scene();
 		this.mixer = undefined;
 		this.targetPosition = new THREE.Vector3();
+		this.faceDirection = FACING.right;
 	}
 
 	async load (x, y) {
@@ -149,31 +154,52 @@ export class Character {
 	}
 
 	async moveUp (level) {
-		return await this._move(new THREE.Vector3(0, 1, 0), level);
+		// If we are on a ladder, climb up.
+		if (level.isClimbable(this.scene.position)) {
+			return await this._move(new THREE.Vector3(0, 1, 0), level);
+		}
+
+		// Otherwise, jump the direction we are facing
+		return await this.jump(level);
 	}
 
 	async moveDown (level) {
 		return await this._move(new THREE.Vector3(0, -1, 0), level);
 	}
 
-	async jumpLeft (level) {
-		return false;
-	}
+	async jump (level) {
+		// Don't jump if blocked directly above
+		const directlyAbove = this.scene.position.clone().add(new THREE.Vector3(0, 1, 0))
+		if (level.blocked(directlyAbove)) {
+			return false;
+		}
 
-	async jumpRight (level) {
-		return false;
+		// First half of the jump
+		await this._move(new THREE.Vector3(this.faceDirection, 1, 0), level);
+
+		// If we landed on a block, don't finish the jump
+		const directlyBelow = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0))
+		if (level.blocked(directlyBelow)) {
+			return false;
+		}
+
+		// Second half of the jump
+		await this._move(new THREE.Vector3(1, -1, 0), level);
 	}
 
 	async moveGravity (level) {
-		// If currently on a ladder square, don't fall
+		// If currently on or directly above a ladder square, don't fall
 		if (level.isClimbable(this.scene.position.clone())) {
+			return false;
+		}
+		if (level.isClimbable(this.scene.position.clone().add(new THREE.Vector3(0, -1, 0)))) {
 			return false;
 		}
 
 		// Try falling due to gravity
 		while (true) {
 			let gravityTarget = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0));
-			if (level.blocked(gravityTarget)) {
+			if (level.blocked(gravityTarget) || level.isClimbable(gravityTarget)) {
 				break;
 			}
 			await this._move(new THREE.Vector3(0, -1, 0), level, 4.0);

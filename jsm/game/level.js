@@ -174,7 +174,6 @@ export class Level {
 			await sleep(1.0);
 		}
 		this.instructions = ui.commands.slice();
-		// this.instructions = "→→↓→←←↑↓".split("");
 	}
 
 	async handleExecutionMode() {
