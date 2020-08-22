@@ -62,7 +62,9 @@ export class SevenSinsGame {
 
 	render () {
 		// Queue up the next frame
-		requestAnimationFrame(this.render.bind(this));
+		setTimeout(() => {
+			requestAnimationFrame(this.render.bind(this));
+		}, 1000 / 60);
 
 		// Get change in time since last frame
 		const dt = this.clock.getDelta();
