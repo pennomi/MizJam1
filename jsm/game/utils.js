@@ -18,3 +18,8 @@ export async function loadGLTF(url, overrideTexture=null) {
 		}, null, reject);
 	});
 }
+
+
+export async function sleep(seconds) {
+  return new Promise(resolve => setTimeout(resolve, Math.floor(seconds * 1000)));
+}

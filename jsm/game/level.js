@@ -1,6 +1,7 @@
 import * as THREE from "../thirdparty/three.module.js";
 import {COLORS} from "./colors.js";
 import {CHARACTER_TYPES} from "./characters.js";
+import {sleep} from "./utils.js";
 
 
 const TILE_GEOMETRY = new THREE.BoxGeometry( 1, 1, 1 );
@@ -50,6 +51,7 @@ export class Level {
 		this.gameMode = GAMEMODE.levelIntroduction;
 		this.timeSinceGameModeChange = 0;
 		this.instructions = [];
+		this.running = true;
 	}
 
 	async load(url) {
@@ -102,9 +104,12 @@ export class Level {
 		camera.far = cameraZ * 100;
 	}
 
-	blocked(position) {
-		// Is there a character in the way?
+	blocked(position, thisCharacter) {
+		// TODO: Is there a character in the way?
 		for (let c of this._characters) {
+			if (c === thisCharacter) {
+				continue;
+			}
 			if (c.targetPosition.equals(position)) {
 				return true;
 			}
@@ -143,19 +148,19 @@ export class Level {
 	}
 
 	update(dt) {
-		this.timeSinceGameModeChange += dt;
-
-		if (this.gameMode === GAMEMODE.levelIntroduction) {
-			this.handleIntroductionMode();
-		} else if (this.gameMode === GAMEMODE.typingInstructions) {
-			this.handleTypingMode();
-		} else if (this.gameMode === GAMEMODE.executingInstructions) {
-			this.handleExecutionMode();
-		} else if (this.gameMode === GAMEMODE.levelFailure) {
-			this.handleFailure();
-		} else if (this.gameMode === GAMEMODE.levelSuccess) {
-			this.handleSuccess();
-		}
+		// this.timeSinceGameModeChange += dt;
+		//
+		// if (this.gameMode === GAMEMODE.levelIntroduction) {
+		// 	this.handleIntroductionMode();
+		// } else if (this.gameMode === GAMEMODE.typingInstructions) {
+		// 	this.handleTypingMode();
+		// } else if (this.gameMode === GAMEMODE.executingInstructions) {
+		// 	this.handleExecutionMode();
+		// } else if (this.gameMode === GAMEMODE.levelFailure) {
+		// 	this.handleFailure();
+		// } else if (this.gameMode === GAMEMODE.levelSuccess) {
+		// 	this.handleSuccess();
+		// }
 
 		// Make the characters do their thing
 		for (const char of this._characters) {
@@ -163,46 +168,50 @@ export class Level {
 		}
 	}
 
-	handleIntroductionMode() {
-		// console.log("We're showing a beautiful cutscene here, probably.");
-		if (this.timeSinceGameModeChange > 1.0) {
-			this.changeMode(GAMEMODE.typingInstructions);
-		}
-	}
-
-	handleTypingMode() {
-		if (this.timeSinceGameModeChange > 1.0) {
-			this.instructions = "→...→...↓...→...←...←...↑...↓...".split("");
-			this.changeMode(GAMEMODE.executingInstructions);
-		}
-	}
-
-	handleExecutionMode() {
-		// Check for failure condition and win condition
-
-		// If any character is moving, cancel out immediately
-		for (const char of this._characters) {
-			if (char.isMoving) {
-				return;
+	async runLevelRoutine() {
+		this.running = true;
+		while (this.running) {
+			await this.handleIntroductionMode();
+			await this.handleTypingMode();
+			let succeeded = await this.handleExecutionMode();
+			if (succeeded) {
+				await this.handleSuccess();
+			} else {
+				await this.handleFailure();
 			}
 		}
+	}
 
-		// Otherwise, tell every character to execute the next instruction
-		const next = this.instructions.shift();
+	async handleIntroductionMode() {
+		console.log("TODO: Show level introduction");
+		await sleep(1.0);
+	}
 
-		// If there's not another instruction, you failed.
-		if (next === undefined) {
-			// There are no more instructions, therefore we've failed.
-			console.log("Ran out of instructions; level failed.");
-			this.changeMode(GAMEMODE.levelFailure);
-			return;
+	async handleTypingMode() {
+		console.log("TODO: Should be collecting instructions now");
+		await sleep(1.0);
+		this.instructions = "→...→...↓...→...←...←...↑...↓...".split("");
+	}
+
+	async handleExecutionMode() {
+		for (const next of this.instructions) {
+			console.log("Executing instruction: " + next);
+
+			// Wait for all the characters to finish their moves
+			this.sortCharacters(next);
+			let promises = [];
+			for (const char of this._characters) {
+				promises.push(char.execute(next, this));
+			}
+			await Promise.all(promises);
+
+			// TODO: Check for failure conditions and win conditions
+
 		}
 
-		console.log("Executing instruction: " + next);
-		this.sortCharacters(next);
-		for (const char of this._characters) {
-			char.execute(next, this);
-		}
+		// There are no more instructions, therefore we've failed.
+		console.log("Ran out of instructions; level failed.");
+		return false;
 	}
 
 	// Sort the characters so they execute in an order where they don't interact incorrectly

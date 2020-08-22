@@ -1,5 +1,5 @@
 import * as THREE from "../thirdparty/three.module.js";
-import {loadGLTF} from "./utils.js";
+import {loadGLTF, sleep} from "./utils.js";
 
 
 const COMMANDS = {
@@ -22,7 +22,6 @@ export class Character {
 	constructor () {
 		this.scene = new THREE.Scene();
 		this.mixer = undefined;
-		this.isMoving = false;
 		this.targetPosition = new THREE.Vector3();
 	}
 
@@ -34,7 +33,7 @@ export class Character {
 		const gltf = await loadGLTF(this.gltfUrl);
 		this.scene = gltf.scene;
 		this.scene.position.set(x, -y + 0.5, 0);
-		this.targetPosition = this.scene.position.clone();
+		this.targetPosition = this.scene.position;
 
 		// Set up the animation mixer to play the first animation in the GLTF if it exists
 		this.mixer = new THREE.AnimationMixer(gltf.scene);
@@ -47,27 +46,24 @@ export class Character {
 	}
 
 	update(dt) {
-		// Update the position of the model if necessary
-		if (this.scene.position.equals(this.targetPosition)) {
-			this.isMoving = false;
-		} else {
-			this.isMoving = true;
-			const direction = this.targetPosition.clone().sub(this.scene.position);
-			let magnitude = direction.length();
-			const maxMovement = CHARACTER_SPEED * dt;
-			if (magnitude > maxMovement) {
-				direction.normalize();
-				direction.multiplyScalar(maxMovement);
-				this.scene.position.add(direction);
-			} else {
-				this.scene.position.copy(this.targetPosition);
-			}
-		}
+		this.dt = dt;
 
 		// Update the model animations
 		if (this.mixer !== undefined) {
 			this.mixer.update(dt);
 		}
+	}
+
+	async waitForNextFrame() {
+		// Wait for there to be a dt
+		while (this.dt === 0) {
+			await sleep(0.01);
+		}
+
+		// Then reset it and return the value
+		let dt = this.dt;
+		this.dt = 0;
+		return dt;
 	}
 
 	getSortValue(command) {
@@ -92,67 +88,86 @@ export class Character {
 		}
 	}
 
-	execute (command, level) {
-		this.isMoving = true;
+	async execute (command, level) {
 		if (command === COMMANDS.moveLeft) {
-			return this.moveLeft(level);
+			return await this.moveLeft(level);
 		} else if (command === COMMANDS.moveRight) {
-			return this.moveRight(level);
+			return await this.moveRight(level);
 		} else if (command === COMMANDS.moveUp) {
-			return this.moveUp(level);
+			return await this.moveUp(level);
 		} else if (command === COMMANDS.moveDown) {
-			return this.moveDown(level);
+			return await this.moveDown(level);
 		} else if (command === COMMANDS.jumpLeft) {
-			return this.jumpLeft(level);
+			return await this.jumpLeft(level);
 		} else if (command === COMMANDS.jumpRight) {
-			return this.jumpRight(level);
+			return await this.jumpRight(level);
 		} else if (command === COMMANDS.moveGravity) {
-			return this.moveGravity(level);
+			return await this.moveGravity(level);
 		} else {
 			throw Error("Invalid command given: `" + command + "`");
 		}
 	}
 
-	_move(direction, level) {
+	async _move(direction, level) {
 		const target = this.scene.position.clone().add(direction);
-		if (level.blocked(target)) {
-			this.intendedTarget = this.scene.position.clone();
+		this.targetPosition = target;
+		if (level.blocked(target, this)) {
+			this.targetPosition = this.scene.position;
 			return false;
 		}
-		this.targetPosition = target;
+
+		console.log("Trying to move");
+
+
+		while (!this.scene.position.equals(target)) {
+			console.log("Trying to move");
+			let dt = await this.waitForNextFrame();
+			const direction = target.clone().sub(this.scene.position);
+			let magnitude = direction.length();
+			const maxMovement = CHARACTER_SPEED * dt;
+			if (magnitude > maxMovement) {
+				direction.normalize();
+				direction.multiplyScalar(maxMovement);
+				this.scene.position.add(direction);
+			} else {
+				this.scene.position.copy(target);
+			}
+		}
+
+		// Tell the output that we did move
 		return true;
 	}
 
-	moveLeft (level) {
-		return this._move(new THREE.Vector3(-1, 0, 0), level);
+	async moveLeft (level) {
+		return await this._move(new THREE.Vector3(-1, 0, 0), level);
 	}
 
-	moveRight (level) {
-		return this._move(new THREE.Vector3(1, 0, 0), level);
+	async moveRight (level) {
+		return await this._move(new THREE.Vector3(1, 0, 0), level);
 	}
 
-	moveUp (level) {
-		return this._move(new THREE.Vector3(0, 1, 0), level);
+	async moveUp (level) {
+		return await this._move(new THREE.Vector3(0, 1, 0), level);
 	}
 
-	moveDown (level) {
-		return this._move(new THREE.Vector3(0, -1, 0), level);
+	async moveDown (level) {
+		return await this._move(new THREE.Vector3(0, -1, 0), level);
 	}
 
-	jumpLeft (level) {
+	async jumpLeft (level) {
 		return false;
 	}
 
-	jumpRight (level) {
+	async jumpRight (level) {
 		return false;
 	}
 
-	moveGravity (level) {
+	async moveGravity (level) {
 		// If currently on a ladder square, don't fall
 		if (level.isClimbable(this.scene.position.clone())) {
 			return false;
 		}
-		return this._move(new THREE.Vector3(0, -1, 0), level);
+		return await this._move(new THREE.Vector3(0, -1, 0), level);
 	}
 }
 
@@ -163,20 +178,20 @@ class Prophet extends Character {
 class Pride extends Character {
 	gltfUrl = "../data/models/characters/pride.glb";
 
-	moveLeft (level) {
-		this._move(new THREE.Vector3(1, 0, 0), level);
+	async moveLeft (level) {
+		return await this._move(new THREE.Vector3(1, 0, 0), level);
 	}
 
-	moveRight (level) {
-		this._move(new THREE.Vector3(-1, 0, 0), level);
+	async moveRight (level) {
+		return await this._move(new THREE.Vector3(-1, 0, 0), level);
 	}
 
-	moveUp (level) {
-		this._move(new THREE.Vector3(0, -1, 0), level);
+	async moveUp (level) {
+		return await this._move(new THREE.Vector3(0, -1, 0), level);
 	}
 
-	moveDown (level) {
-		this._move(new THREE.Vector3(0, 1, 0), level);
+	async moveDown (level) {
+		return await this._move(new THREE.Vector3(0, 1, 0), level);
 	}
 }
 

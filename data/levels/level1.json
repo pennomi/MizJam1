@@ -5,6 +5,7 @@
     {"type": "prophet", "position": [2, 6]},
     {"type": "pride", "position": [3, 6]},
     {"type": "prophet", "position": [6, 6]},
-    {"type": "prophet", "position": [6, 5]}
+    {"type": "prophet", "position": [6, 5]},
+    {"type": "prophet", "position": [7, 5]}
   ]
 }
