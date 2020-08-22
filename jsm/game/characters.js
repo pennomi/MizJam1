@@ -200,11 +200,24 @@ export class Character {
 
 		// Try falling due to gravity
 		while (true) {
-			let gravityTarget = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0));
-			if (level.blocked(gravityTarget) || level.isClimbable(gravityTarget)) {
+			var gravityTarget = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0));
+			if (level.isClimbable(gravityTarget)) {
+				break;
+			}
+			if (level.isCharacter(gravityTarget)) {
+				gravityTarget = gravityTarget.add(new THREE.Vector3(0, -1, 0));
+				if (level.isCharacter(gravityTarget)) {
+					gravityTarget = gravityTarget.add(new THREE.Vector3(0, -1, 0));
+					if (level.isCharacter(gravityTarget)) {
+						gravityTarget = gravityTarget.add(new THREE.Vector3(0, -1, 0));
+					}
+				}
+			}
+			if (level.blocked(gravityTarget)) {
 				break;
 			}
 			await this._move(new THREE.Vector3(0, -1, 0), level, 0.25);
+			await sleep(0.01); // things get locked if this isn't here for some reason
 		}
 	}
 

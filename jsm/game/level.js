@@ -136,13 +136,8 @@ export class Level {
 
 	blocked(position, thisCharacter) {
 		// TODO: Is there a character in the way?
-		for (let c of this._characters) {
-			if (c === thisCharacter) {
-				continue;
-			}
-			if (c.targetPosition.equals(position)) {
-				return true;
-			}
+		if (this.isCharacter(position, thisCharacter)) {
+			return true;
 		}
 
 		// Is there a tile in the way?
@@ -169,6 +164,17 @@ export class Level {
 		}
 		let tile = this._tiles[y][x];
 		return tile.name === "Ladder";
+	}
+
+	isCharacter(position, ignoreCharacter) {
+		for (let c of this._characters) {
+			if (c === ignoreCharacter) {
+				continue;
+			}
+			if (c.targetPosition.equals(position)) {
+				return true;
+			}
+		}
 	}
 
 	update(dt) {
