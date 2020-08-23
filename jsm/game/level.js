@@ -91,6 +91,9 @@ export class Level {
 		let response = await fetch(url);
 		let data = await response.json();
 		this.nextLevelId = data.nextLevel;
+		this.name = data.name;
+		this.startText = data.startText;
+		this.completeText = data.completeText;
 
 		this.scene.name = data.name;
 
@@ -238,7 +241,7 @@ export class Level {
 	}
 
 	async handleIntroductionMode(ui) {
-		await ui.showBillboard("Level instructions here!");
+		await ui.showBillboard(this.name, this.startText);
 		await sleep(3.0);
 		await ui.hideBillboard();
 	}
@@ -284,14 +287,14 @@ export class Level {
 
 	async handleFailure(ui, failureMessage) {
 		await sleep(1.0);
-		await ui.showBillboard(failureMessage);
+		await ui.showBillboard("Failure", failureMessage);
 		await sleep(3.0);
 		await ui.hideBillboard();
 		this.running = false; // set this after they decide to retry
 	}
 
 	async handleSuccess(ui) {
-		await ui.showBillboard("You successfully passed the level!");
+		await ui.showBillboard("Success", this.completeText);
 		await sleep(3.0);
 		await ui.hideBillboard();
 		this.running = false;

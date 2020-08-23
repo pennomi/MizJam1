@@ -1,5 +1,7 @@
 {
   "name": "Level 1",
+  "startText": "Travel across the desert and over the sandy dunes.",
+  "completeText": "You survived the scorching sun and reached an oasis!",
   "tiles": "111111111111\n100000000001\n100000000001\n100100000021\n111111101111\n111111141111\n111111111111",
   "characters": [
     {"type": "prophet", "position": [1, 4], "name": "Abrahuzelah"}

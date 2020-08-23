@@ -59,6 +59,10 @@ export class TypeableTexture extends THREE.CanvasTexture {
 		string = string.toUpperCase();
 		let index = 0;
 		for (const char of string) {
+			if (char === "\n") {
+				index += this.maxRowLength - index % this.maxRowLength;
+				continue;
+			}
 			const glyphPosition = GLYPH_POSITIONS[char];
 			this.ctx.drawImage(
 				this.fontImage,

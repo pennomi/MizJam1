@@ -1,5 +1,7 @@
 {
   "name": "Level 2",
+  "startText": "Get to the end",
+  "completeText": "",
   "tiles": "111111\n100001\n101111\n100001\n111101\n120001\n111111",
   "characters": [
     {"type": "prophet", "position": [4, 2], "name": "Abrahuzelah"}

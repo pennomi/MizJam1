@@ -15,7 +15,7 @@ export class UI {
 		this.commands = [];
 
 		this.tabletTexture = new TypeableTexture("../data/models/ui/tablet.png", 128, 128, 32, 32, 4);
-		this.billboardTexture = new TypeableTexture("../data/models/ui/billboard.png", 256, 128, 24, 24, 13);
+		this.billboardTexture = new TypeableTexture("../data/models/ui/billboard.png", 512, 256, 48, 48, 26);
 
 		this.INPUT_MODES = {
 			locked: 0,
@@ -136,8 +136,14 @@ export class UI {
 		this.tabletTexture.write(string);
 	}
 
-	async showBillboard(string) {
-		this.billboardTexture.write(string);
+	async showBillboard(title, body) {
+		const rowSize = 26;
+		// Create a string that centers the title and wraps body text words properly
+		title = title.slice(0, rowSize);
+		let half = Math.floor((rowSize - title.length) / 2);
+		title = " ".repeat(half) + title + "\n\n";
+
+		this.billboardTexture.write(title + body);
 
 		// Run the interpolation
 		let currentTime = 0;

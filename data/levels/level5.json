@@ -1,5 +1,7 @@
 {
   "name": "Level 5",
+  "startText": "Get to the end",
+  "completeText": "",
   "tiles": "1111111111111\n1000000000001\n1000000001001\n1000000001001\n1500000001201\n1111111111111",
   "characters": [
     {"type": "prophet", "position": [3, 5], "name": "Greed"},
