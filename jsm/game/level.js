@@ -158,7 +158,7 @@ export class Level {
 
 		// Is there a tile in the way?
 		let tile = this.getTileFromCharacterPosition(position);
-		if (tile === null) {
+		if (tile === null || tile === undefined) {
 			return true;
 		}
 		return tile.blocking;
@@ -204,8 +204,12 @@ export class Level {
 			if (c === ignoreCharacter) {
 				continue;
 			}
-			if (c.targetPosition.equals(position)) {
-				return true;
+
+			let movementDirection = c.targetPosition.clone().sub(c.scene.position);
+			for (let space of c.getSelfSpaces()) {
+				if (space.add(movementDirection).equals(position)) {
+					return true;
+				}
 			}
 		}
 	}

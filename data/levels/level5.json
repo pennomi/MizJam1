@@ -2,9 +2,9 @@
   "name": "Level 5",
   "tiles": "1111111111111\n1000000000001\n1000000001001\n1000000001001\n1500000001201\n1111111111111",
   "characters": [
-    {"type": "pride", "position": [3, 5], "name": "Greed"},
+    {"type": "prophet", "position": [3, 5], "name": "Greed"},
     {"type": "prophet", "position": [4, 5], "name": "Abrahuzelah"},
-    {"type": "pride", "position": [5, 5], "name": "Gluttony"}
+    {"type": "gluttony", "position": [5, 5], "name": "Gluttony"}
   ],
   "nextLevel": "level6"
 }

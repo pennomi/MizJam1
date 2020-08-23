@@ -29,7 +29,14 @@ class Pride extends Character {
 }
 
 
+class Gluttony extends Character {
+	gltfUrl = "../data/models/characters/gluttony.glb";
+	size = 2;
+}
+
+
 export const CHARACTER_TYPES = {
 	prophet: Prophet,
-	pride: Pride
+	pride: Pride,
+	gluttony: Gluttony,
 };

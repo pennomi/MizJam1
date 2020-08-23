@@ -1,5 +1,6 @@
 import * as THREE from "../thirdparty/three.module.js";
 import {jerp1, jerp2, lerp, loadGLTF, sleep} from "./utils.js";
+import {Vector3} from "../thirdparty/three.module.js";
 
 
 const COMMANDS = {
@@ -22,6 +23,7 @@ const CHARACTER_ROTATION_SPEED = Math.PI * 2;
 
 export class Character {
 	gltfUrl = null;
+	size = 1;
 
 	constructor () {
 		this.name = this.constructor.name;
@@ -37,9 +39,11 @@ export class Character {
 		}
 
 		const gltf = await loadGLTF(this.gltfUrl);
-		this.scene = gltf.scene;
+		this.scene.add(gltf.scene);
+		this.internalScene = gltf.scene;
 		this.scene.position.set(x, -y + 0.5, 0);
 		this.targetPosition = this.scene.position;
+		this.setScale(this.size);
 
 		// Set up the animation mixer to play the first animation in the GLTF if it exists
 		this.mixer = new THREE.AnimationMixer(gltf.scene);
@@ -49,6 +53,11 @@ export class Character {
 
 		// Return it
 		return this.scene;
+	}
+
+	setScale(scale) {
+		this.internalScene.position.set((scale - 1) * 0.5/scale, 0, 0);
+		this.scene.scale.set(scale, scale, scale);
 	}
 
 	update(dt) {
@@ -117,6 +126,17 @@ export class Character {
 		return moved;
 	}
 
+	getSelfSpaces() {
+		let spaces = [];
+		for (let x = 0; x < this.size; x++) {
+			for (let y = 0; y < this.size; y++) {
+				const offset = new Vector3(x, y, 0);
+				spaces.push(this.scene.position.clone().add(offset));
+			}
+		}
+		return spaces;
+	}
+
 	async _move(direction, level, duration=null, interpolator=null) {
 		if (duration === null) {
 			duration = DEFAULT_MOVE_TIME;
@@ -127,9 +147,13 @@ export class Character {
 
 		const target = this.scene.position.clone().add(direction);
 		this.targetPosition = target;
-		if (level.blocked(target, this)) {
-			this.targetPosition = this.scene.position;
-			return false;
+
+		// Check if any of our spaces will be blocked
+		for (let space of this.getSelfSpaces()) {
+			if (level.blocked(space.add(direction), this)) {
+				this.targetPosition = this.scene.position;
+				return false;
+			}
 		}
 
 		// Run the interpolation
@@ -172,8 +196,8 @@ export class Character {
 
 	async jump (level) {
 		// Don't jump if blocked directly above
-		const directlyAbove = this.scene.position.clone().add(new THREE.Vector3(0, 1, 0))
-		if (level.blocked(directlyAbove)) {
+		const directlyAbove = this.scene.position.clone().add(new THREE.Vector3(0, this.size, 0));
+		if (level.blocked(directlyAbove, this)) {
 			return false;
 		}
 
@@ -201,7 +225,7 @@ export class Character {
 
 		// Try falling due to gravity
 		while (true) {
-			var gravityTarget = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0));
+			let gravityTarget = this.scene.position.clone().add(new THREE.Vector3(0, -1, 0));
 			if (level.isClimbable(gravityTarget)) {
 				break;
 			}
@@ -214,10 +238,11 @@ export class Character {
 					}
 				}
 			}
-			if (level.blocked(gravityTarget)) {
+
+			let moved = await this._move(new THREE.Vector3(0, -1, 0), level, 0.25);
+			if (!moved) {
 				break;
 			}
-			await this._move(new THREE.Vector3(0, -1, 0), level, 0.25);
 			await sleep(0.01); // things get locked if this isn't here for some reason
 		}
 	}
