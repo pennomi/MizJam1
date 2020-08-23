@@ -7,6 +7,11 @@ class Prophet extends Character {
 }
 
 
+class Follower extends Character {
+	gltfUrl = "../data/models/characters/follower.glb";
+}
+
+
 class Pride extends Character {
 	gltfUrl = "../data/models/characters/pride.glb";
 
@@ -37,6 +42,7 @@ class Gluttony extends Character {
 
 export const CHARACTER_TYPES = {
 	prophet: Prophet,
+	follower: Follower,
 	pride: Pride,
 	gluttony: Gluttony,
 };

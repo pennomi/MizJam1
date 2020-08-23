@@ -1,7 +1,7 @@
 import * as THREE from "../thirdparty/three.module.js";
 import {CHARACTER_TYPES} from "./characters.js";
 import {sleep} from "./utils.js";
-import {Tile, TILE_TYPES} from "./tile.js";
+import {TILE_TYPES} from "./tile.js";
 
 
 const GAMEMODE = {
