@@ -1,0 +1,9 @@
+{
+  "name": "Level 6",
+  "tiles": "11111111111111\n10000000500001\n10000001101001\n10000010000001\n10000000000001\n11110000000021\n11111111000111\n11111111000111\n11111111010111",
+  "characters": [
+    {"type": "prophet", "position": [1, 5], "name": "Abrahuzelah"},
+    {"type": "pride", "position": [2, 5], "name": "Gluttony"}
+  ],
+  "nextLevel": "level7"
+}
