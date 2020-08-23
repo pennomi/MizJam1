@@ -1,10 +1,7 @@
 import * as THREE from "../thirdparty/three.module.js";
-import {COLORS} from "./colors.js";
 import {CHARACTER_TYPES} from "./characters.js";
 import {sleep} from "./utils.js";
-
-
-const TILE_GEOMETRY = new THREE.BoxGeometry( 1, 1, 1 );
+import {Tile, TILE_TYPES} from "./tile.js";
 
 
 const GAMEMODE = {
@@ -15,63 +12,6 @@ const GAMEMODE = {
 	levelSuccess: 4,
 }
 
-
-const TILE_POSITIONING = {
-	out: 0,
-	in: -1,
-}
-
-
-class Tile {
-	constructor(name, options) {
-		this.name = name;
-
-		this.blocking = options.blocking || false;
-		this.climbable = options.climbable || false;
-		this.deadly = options.deadly || false;
-		this.positioning = options.blocking ? TILE_POSITIONING.out : TILE_POSITIONING.in;
-		if (options.position !== undefined) {
-			this.positioning = options.position;
-		}
-
-		this.color = options.color || COLORS.black;
-	}
-
-	createMesh(x, y) {
-		const material = new THREE.MeshStandardMaterial({color: this.color});
-		const cube = new THREE.Mesh(TILE_GEOMETRY, material);
-		cube.position.set(x, y, this.positioning);
-		return cube;
-	}
-}
-
-
-const TILE_TYPES = {
-	// TODO: Gamma correct these colors
-	0: new Tile("Air", {
-		color: COLORS.darkgray,
-	}),
-	1: new Tile("Ground", {
-		blocking: true,
-		color: COLORS.black,
-	}),
-	2: new Tile("Goal", {
-		color: COLORS.darkpink,
-	}),
-	3: new Tile("Ladder", {
-		climbable: true,
-		color: COLORS.darkbrown,
-	}),
-	4: new Tile("Water", {
-		deadly: true,
-		position: TILE_POSITIONING.out,
-		color: COLORS.mediumblue,
-	}),
-	5: new Tile("Destructable", {
-		blocking: true,
-		color: COLORS.yellow,
-	}),
-}
 
 
 export class Level {
@@ -286,7 +226,7 @@ export class Level {
 	}
 
 	async handleFailure(ui, failureMessage) {
-		await sleep(1.0);
+		await sleep(0.75);
 		await ui.showBillboard("Failure", failureMessage);
 		await sleep(3.0);
 		await ui.hideBillboard();
@@ -294,6 +234,7 @@ export class Level {
 	}
 
 	async handleSuccess(ui) {
+		await sleep(0.75);
 		await ui.showBillboard("Success", this.completeText);
 		await sleep(3.0);
 		await ui.hideBillboard();
