@@ -1,0 +1,10 @@
+{
+  "name": "Level 8",
+  "startText": "Lead the rebellious king through a grueling ritual to cleanse his sins.",
+  "completeText": "He doesn't seem very repentant, but he is now fit to rule your chosen people!",
+  "tiles": "111111111\n100000001\n150000001\n111101111\n111101111\n111101111\n110000011\n110000021\n111111111",
+  "characters": [
+    {"type": "pride", "position": [7, 3], "name": "Abrahuzelah"}
+  ],
+  "nextLevel": "level9"
+}

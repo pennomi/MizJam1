@@ -1,10 +1,10 @@
 {
   "name": "Level 1",
-  "startText": "Travel across the desert and over the sandy dunes.",
-  "completeText": "You survived the scorching sun and reached an oasis!",
-  "tiles": "111111111111\n100000000001\n100000000001\n100100000021\n111111101111\n111111141111\n111111111111",
+  "startText": "As a fledgeling god, you must direct your newly chosen Prophet to the sacred shrine in the foothills.",
+  "completeText": "The Prophet has received your revelation and the tablets to be inscribed with your will!",
+  "tiles": "111111\n100001\n101111\n100001\n111101\n120001\n111111",
   "characters": [
-    {"type": "prophet", "position": [1, 4], "name": "Abrahuzelah"}
+    {"type": "prophet", "position": [4, 2]}
   ],
   "nextLevel": "level2"
 }

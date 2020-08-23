@@ -1,11 +1,11 @@
 {
-  "name": "Level 7",
-  "startText": "Have your disciples ascend the cliffs to summit the mountain.",
-  "completeText": "The people are inspired by the breathtaking panorama of the promised land!",
+  "name": "Level 10",
+  "startText": "Guide your followers through the hidden, winding labyrinth.",
+  "completeText": "Your Prophet emerges in the throne room of an overgrown, but unmistakably opulent, palace!",
   "tiles": "111111111\n100000001\n150000001\n111101111\n111101111\n111101111\n110000011\n110000021\n111111111",
   "characters": [
     {"type": "prophet", "position": [7, 3], "name": "Abrahuzelah"},
     {"type": "gluttony", "position": [4, 8], "name": "Gluttony"}
   ],
-  "nextLevel": "level8"
+  "nextLevel": "level11"
 }

@@ -1,12 +1,12 @@
 {
   "name": "Level 5",
-  "startText": "Get to the end",
-  "completeText": "",
+  "startText": "Teach your people to avoid the treacherous acid pools.",
+  "completeText": "They safely make camp on solid ground and gather 'round the fire, singing your praises!",
   "tiles": "1111111111111\n1000000000001\n1000000001001\n1000000001001\n1500000001201\n1111111111111",
   "characters": [
-    {"type": "prophet", "position": [3, 5], "name": "Greed"},
-    {"type": "prophet", "position": [4, 5], "name": "Abrahuzelah"},
-    {"type": "gluttony", "position": [5, 5], "name": "Gluttony"}
+    {"type": "follower", "position": [3, 5]},
+    {"type": "prophet", "position": [4, 5]},
+    {"type": "gluttony", "position": [5, 5]}
   ],
   "nextLevel": "level6"
 }

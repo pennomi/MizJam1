@@ -1,7 +1,7 @@
 {
   "name": "Level 4",
-  "startText": "Get to the end",
-  "completeText": "",
+  "startText": "Send your people across the desert dunes.",
+  "completeText": "They survived the scorching sun and now enjoy the refreshing waters of an oasis!",
   "tiles": "1111111111\n1000100001\n1110101111\n1000100001\n1011111101\n1000020001\n1111111111",
   "characters": [
     {"type": "pride", "position": [1, 2]},

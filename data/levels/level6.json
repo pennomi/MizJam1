@@ -1,7 +1,7 @@
 {
   "name": "Level 6",
-  "startText": "Get to the end",
-  "completeText": "",
+  "startText": "Lead your acolytes through the cave, dodging stalactites and bottomless pools.",
+  "completeText": "They've found enlightenment in the darkness, and are prepared to lead their civilization in the way of your light!",
   "tiles": "11111111111111\n10000000500001\n10000001101001\n10000010000001\n10000000000001\n11110000000021\n11111111000111\n11111111000111\n11111111010111",
   "characters": [
     {"type": "prophet", "position": [1, 5], "name": "Abrahuzelah"},

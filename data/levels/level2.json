@@ -1,10 +1,10 @@
 {
   "name": "Level 2",
-  "startText": "Get to the end",
-  "completeText": "",
-  "tiles": "111111\n100001\n101111\n100001\n111101\n120001\n111111",
+  "startText": "Guide your chosen ones over a mysterious burial ground, rife with traps.",
+  "completeText": "From the final grave, your people collect the ceremonial vestments to be worn by your true prophet!",
+  "tiles": "111111111111\n100000000001\n100000000001\n100100000021\n111111101111\n111111141111\n111111111111",
   "characters": [
-    {"type": "prophet", "position": [4, 2], "name": "Abrahuzelah"}
+    {"type": "prophet", "position": [1, 4]}
   ],
   "nextLevel": "level3"
 }
