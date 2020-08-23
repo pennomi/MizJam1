@@ -1,0 +1,9 @@
+{
+  "name": "Level 4",
+  "tiles": "1111111111\n1000100001\n1110101111\n1000100001\n1011111101\n1000020001\n1111111111",
+  "characters": [
+    {"type": "pride", "position": [1, 2]},
+    {"type": "prophet", "position": [8, 2], "name": "Abrahuzelah"}
+  ],
+  "nextLevel": "level5"
+}
