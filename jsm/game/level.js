@@ -221,7 +221,7 @@ export class Level {
 		}
 
 		// There are no more instructions, therefore we've failed.
-		this.failureMessage = "Ran out of instructions. level failed."
+		this.failureMessage = "Your disciples ran out of instructions."
 		return false;
 	}
 
