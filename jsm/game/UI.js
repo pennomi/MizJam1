@@ -44,7 +44,7 @@ export class UI {
 		let dirLight = new THREE.DirectionalLight(0xffffff, 1);
 		dirLight.position.set(5, 2, 8);
 		this.scene.add(dirLight);
-		window.addEventListener('click', this.handleClickEvent.bind(this));
+		container.addEventListener('click', this.handleClickEvent.bind(this));
 		window.addEventListener('keydown', this.handleKeyEvent.bind(this));
 
 		this.commands = [];
@@ -174,8 +174,12 @@ export class UI {
 			return;
 		}
 
-		this.mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
-		this.mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
+		let rect = event.target.getBoundingClientRect();
+		let x = event.clientX - rect.left;
+		let y = event.clientY - rect.top;
+
+		this.mouse.x = ( x / this.renderer.domElement.clientWidth ) * 2 - 1;
+		this.mouse.y = - ( y / this.renderer.domElement.clientHeight ) * 2 + 1;
 		this.raycaster.setFromCamera( this.mouse, this.camera );
 
 		let intersects = this.raycaster.intersectObject( this.scene, true );
