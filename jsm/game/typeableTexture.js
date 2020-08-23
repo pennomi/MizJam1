@@ -58,10 +58,18 @@ export class TypeableTexture extends THREE.CanvasTexture {
 
 		string = string.toUpperCase();
 		let index = 0;
+		let strIndex = -1;
+		let wordStr = string.replace( /\n/g, " " );
 		for (const char of string) {
+			strIndex += 1;
 			if (char === "\n") {
 				index += this.maxRowLength - index % this.maxRowLength;
 				continue;
+			}
+			let wordStartIndex = strIndex - wordStr.slice(0, strIndex).split(" ").slice(-1)[0].length;
+			let word = wordStr.slice(wordStartIndex).split(" ")[0];
+			if (wordStartIndex === strIndex && word && word.length <= this.maxRowLength && index % this.maxRowLength + word.length > this.maxRowLength) {
+				index += this.maxRowLength - index % this.maxRowLength;
 			}
 			const glyphPosition = GLYPH_POSITIONS[char];
 			this.ctx.drawImage(
