@@ -19,6 +19,13 @@ TILEMAP_BUMP.encoding = sRGBEncoding;
 TILEMAP_BUMP.minFilter = THREE.NearestFilter;
 TILEMAP_BUMP.magFilter = THREE.NearestFilter;
 
+const TILE_MATERIAL = new THREE.MeshStandardMaterial({
+	map: TILEMAP,
+	bumpMap: TILEMAP,
+	transparent: true,
+});
+
+
 export class Tile {
 	constructor(name, textureCoordinate, options) {
 		this.name = name;
@@ -35,23 +42,17 @@ export class Tile {
 	}
 
 	createMesh(x, y) {
-		const material = new THREE.MeshStandardMaterial({
-			map: TILEMAP,
-			bumpMap: TILEMAP,
-			transparent: true,
-		});
-
-		// Create the geometry
+		// Create the geometry  TODO: Should only be once per tile type. Or, tiles should be instanced
 		const geometry = new THREE.BoxGeometry(1, 1, 1);
-		const cube = new THREE.Mesh(geometry, material);
+		const cube = new THREE.Mesh(geometry, TILE_MATERIAL);
 
-		// Adjust the UV map
+		// Adjust the UV map (The +- 0.001 helps avoid texture sampling errors with the adjoining tile)
 		const unitX = 1/TILEMAP_DIMENSIONS[0];
-		let startX = this.textureCoordinate[0] * unitX;
-		let endX = this.textureCoordinate[0] * unitX + unitX;
+		let startX = this.textureCoordinate[0] * unitX + 0.001;
+		let endX = this.textureCoordinate[0] * unitX + unitX - 0.001;
 		const unitY = 1/TILEMAP_DIMENSIONS[1];
-		let startY = this.textureCoordinate[1] * unitY;
-		let endY = this.textureCoordinate[1] * unitY + unitY;
+		let startY = this.textureCoordinate[1] * unitY + 0.001;
+		let endY = this.textureCoordinate[1] * unitY + unitY - 0.001;
 		for (let tri of cube.geometry.faceVertexUvs[0]) {
 			for (let v of tri) {
 				v.x = v.x === 0 ? startX : endX;
@@ -60,8 +61,8 @@ export class Tile {
 		}
 		cube.geometry.uvsNeedUpdate = true;
 
-		// Make it a hair under 1 meter to create nice lines?
-		// cube.scale.set(0.99, 0.99, 0.99);
+		// Make it a hair over 1 meter to avoid lines?
+		// cube.scale.set(1.01, 1.01, 1.01);
 
 		// Set the scene position
 		cube.position.set(x, y, this.positioning);
@@ -72,18 +73,18 @@ export class Tile {
 
 export const TILE_TYPES = {
 	0: new Tile("Sky", [0, 21], {}),
-	1: new Tile("Ground", [2, 21], {
+	1: new Tile("Ground", [19, 21], {
 		blocking: true,
 	}),
-	2: new Tile("Goal", [0, 2], {}),
-	3: new Tile("Ladder", [0, 3], {
+	2: new Tile("Goal", [29, 9], {}),
+	3: new Tile("Ladder", [21, 20], {
 		climbable: true,
 	}),
 	4: new Tile("Water", [7, 21], {
 		deadly: true,
 		position: TILE_POSITIONING.out,
 	}),
-	5: new Tile("Destructable", [0, 5], {
+	5: new Tile("Destructable", [23, 18], {
 		blocking: true,
 	}),
 }
