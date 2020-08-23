@@ -126,7 +126,7 @@ export class Level {
 			if (tile === null) {
 				return c.name + " fell into the void.";
 			} else if (tile.deadly) {
-				return c.name + " died.";
+				return c.name + " " + tile.deathMessage + ".";
 			}
 		}
 
@@ -221,14 +221,14 @@ export class Level {
 		}
 
 		// There are no more instructions, therefore we've failed.
-		this.failureMessage = "Your disciples ran out of instructions."
+		this.failureMessage = "Your disciples ran out of commandments. Aimless, they fall away."
 		return false;
 	}
 
 	async handleFailure(ui, failureMessage) {
 		await sleep(0.75);
 		await ui.showBillboard("Failure", failureMessage);
-		await sleep(3.0);
+		await sleep(5.0);
 		await ui.hideBillboard();
 		this.running = false; // set this after they decide to retry
 	}
@@ -236,7 +236,7 @@ export class Level {
 	async handleSuccess(ui) {
 		await sleep(0.75);
 		await ui.showBillboard("Success", this.completeText);
-		await sleep(3.0);
+		await sleep(5.0);
 		await ui.hideBillboard();
 		this.running = false;
 		return true; // return false if they opt to retry the level?

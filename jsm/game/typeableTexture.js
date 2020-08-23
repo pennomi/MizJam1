@@ -5,11 +5,11 @@ const GLYPH_SIZE = 16;
 const GLYPH_POSITIONS = {};
 function loadGlyphs() {
 	const characters =
-		"0123456789:.%\n" +
+		"0123456789:., \n" +
 		"ABCDEFGHIJKLM\n" +
 		"NOPQRSTUVWXYZ\n" +
-		"#+-×÷=@$¢!?© \n" +
-		"~~~~~~~~~~~~~\n" +
+		"#+-×÷=@$¢!?©%\n" +
+		"~~~~~~~~~~~\"'\n" +
 		"~~~~~~~~~~~~~\n" +
 		"~~~~~~~~~↑→↓←\n" +
 		"~~~~~~~~~⇧⇨⇩⇦\n";
@@ -72,6 +72,9 @@ export class TypeableTexture extends THREE.CanvasTexture {
 				index += this.maxRowLength - index % this.maxRowLength;
 			}
 			const glyphPosition = GLYPH_POSITIONS[char];
+			if (glyphPosition === undefined) {
+				throw Error("Glyph `" + char + "` not found!");
+			}
 			this.ctx.drawImage(
 				this.fontImage,
 				glyphPosition[0] * GLYPH_SIZE,

@@ -33,6 +33,7 @@ export class Tile {
 		this.blocking = options.blocking || false;
 		this.climbable = options.climbable || false;
 		this.deadly = options.deadly || false;
+		this.deathMessage = options.deathMessage || "died";
 		this.positioning = options.blocking ? TILE_POSITIONING.out : TILE_POSITIONING.in;
 		if (options.position !== undefined) {
 			this.positioning = options.position;
@@ -82,6 +83,7 @@ export const TILE_TYPES = {
 	}),
 	4: new Tile("Water", [7, 21], {
 		deadly: true,
+		deathMessage: "drowned in the water",
 		position: TILE_POSITIONING.out,
 	}),
 	5: new Tile("Destructable", [23, 18], {
