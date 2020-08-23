@@ -90,7 +90,7 @@ export class SevenSinsGame {
 
 	async beginGame() {
 		// Load the commandment tablet
-		this.ui = new UI(this.renderer);
+		this.ui = new UI(this.renderer, this.container);
 		await this.ui.load();
 
 		// Load the first level
