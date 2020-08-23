@@ -258,14 +258,14 @@ export class Character {
 	}
 
 	async _waitForRotation(targetRotation, speed) {
-		while (this.scene.rotation.y !== targetRotation) {
+		while (this.internalScene.rotation.y !== targetRotation) {
 			let dt = await this.waitForNextFrame();
 			let localSpeed = speed * dt;
-			const distance = targetRotation - this.scene.rotation.y;
+			const distance = targetRotation - this.internalScene.rotation.y;
 			if (Math.abs(localSpeed) < Math.abs(distance)) {
-				this.scene.rotation.set(0, this.scene.rotation.y + localSpeed, 0);
+				this.internalScene.rotation.set(0, this.internalScene.rotation.y + localSpeed, 0);
 			} else {
-				this.scene.rotation.set(0, targetRotation, 0);
+				this.internalScene.rotation.set(0, targetRotation, 0);
 			}
 		}
 	}
