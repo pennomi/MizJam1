@@ -94,7 +94,12 @@ export class SevenSinsGame {
 		await this.ui.load();
 
 		// Load the first level
-		this.loadLevel('level1');
+		this.loadLevel("level" + (new URLSearchParams(location.search).get("level") || "1"));
+
+		// Load audio
+		window.addEventListener('click', () => {
+			this.loadAudio("../data/music/mandalorian.ogg");
+		}, {once: true})
 
 		// Start the render loop
 		this.render();
@@ -114,9 +119,33 @@ export class SevenSinsGame {
 			});
 		});
 	}
+
+	loadAudio (audioUrl) {
+		if (!this.sound) {
+			const isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+			if (isIE11) {
+				return;
+			}
+			this.listener = new THREE.AudioListener();
+			this.camera.add(this.listener);
+			this.sound = new THREE.Audio(this.listener);
+		}
+		const audioLoader = new THREE.AudioLoader();
+		audioLoader.load(audioUrl, buffer => {
+			this.sound.setBuffer(buffer);
+			this.sound.setLoop(true);
+			this.resumeAudio();
+		}, null, err => {
+			console.error(err);
+		});
+	}
+	
+	muteAudio () {
+		this.sound.setVolume(0);
+	}
+	
+	resumeAudio () {
+		this.sound.setVolume(1);
+		this.sound.play();
+	}
 }
-
-
-
-
-
