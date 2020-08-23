@@ -13,7 +13,7 @@ class Pride extends Character {
 	async load(x, y) {
 			let scene = await super.load(x, y);
 			this.faceDirection = FACING.left;
-			this.scene.rotation.set(0, Math.PI, 0);
+			// this.scene.rotation.set(0, Math.PI, 0);
 			return scene;
 	}
 
