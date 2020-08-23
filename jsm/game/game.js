@@ -98,7 +98,7 @@ export class SevenSinsGame {
 
 		// Load audio
 		window.addEventListener('click', () => {
-			this.loadAudio("../data/music/mandalorian.ogg");
+			this.loadAudio("../data/music/exodus.mp3");
 		}, {once: true})
 
 		// Start the render loop

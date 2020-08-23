@@ -231,7 +231,7 @@ export class Level {
 			if (succeeded) {
 				proceed = await this.handleSuccess(ui);
 			} else {
-				await this.handleFailure(ui, "You lose the level");
+				await this.handleFailure(ui, this.failureMessage);
 			}
 		}
 		return proceed;
@@ -268,7 +268,7 @@ export class Level {
 
 			let failureMessage = this.checkFailureStates();
 			if (failureMessage !== "") {
-				console.log("You lose! " + failureMessage);
+				this.failureMessage = failureMessage;
 				return false;
 			}
 
@@ -278,11 +278,12 @@ export class Level {
 		}
 
 		// There are no more instructions, therefore we've failed.
-		console.log("Ran out of instructions; level failed.");
+		this.failureMessage = "Ran out of instructions. level failed."
 		return false;
 	}
 
 	async handleFailure(ui, failureMessage) {
+		await sleep(1.0);
 		await ui.showBillboard(failureMessage);
 		await sleep(3.0);
 		await ui.hideBillboard();
