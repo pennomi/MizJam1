@@ -7,7 +7,7 @@ const UI_ORIENTATION = new THREE.Euler(-Math.PI/16, -Math.PI/8, 0);
 
 
 export class UI {
-	constructor(renderer) {
+	constructor(renderer, container) {
 		this.renderer = renderer;
 		this.scene = new THREE.Scene();
 		this.scene.rotation.set(-Math.PI/16, -Math.PI/8, 0);
@@ -29,7 +29,7 @@ export class UI {
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.OrthographicCamera(
 			0, 10,
-			10 * window.innerHeight / window.innerWidth, 0,
+			10 * container.clientHeight / container.clientWidth, 0,
 			0.01, 1000);
 		this.camera.position.set(0, 0, 10);
 		this.camera.up.set(0, 1, 0);
