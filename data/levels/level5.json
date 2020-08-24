@@ -1,6 +1,6 @@
 {
   "name": "Level 5",
-  "startText": "Have your disciples descend the cliffs to summit the mountain.",
+  "startText": "Have your disciples descend the cliffs to exit the caves.",
   "completeText": "The people are inspired by the breathtaking panorama of the promised land!",
   "tiles": "1111111111\n0000000001\n0000000001\n1111101111\n1111101111\n1111101111\n1000000111\n100000000G\n1111101111\n1111101111\n1111101111\n1111111111",
   "characters": [
