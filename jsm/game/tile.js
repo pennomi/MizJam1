@@ -10,11 +10,11 @@ const TILE_POSITIONING = {
 
 // Load tilemap
 const TILEMAP_DIMENSIONS = [48, 22]
-const TILEMAP = new THREE.TextureLoader().load("../data/models/tiles/tilesetColor.png")
+const TILEMAP = new THREE.TextureLoader().load("./data/models/tiles/tilesetColor.png")
 TILEMAP.encoding = sRGBEncoding;
 TILEMAP.minFilter = THREE.NearestFilter;
 TILEMAP.magFilter = THREE.NearestFilter;
-const TILEMAP_BUMP = new THREE.TextureLoader().load("../data/models/tiles/tileset.png")
+const TILEMAP_BUMP = new THREE.TextureLoader().load("./data/models/tiles/tileset.png")
 TILEMAP_BUMP.encoding = sRGBEncoding;
 TILEMAP_BUMP.minFilter = THREE.NearestFilter;
 TILEMAP_BUMP.magFilter = THREE.NearestFilter;

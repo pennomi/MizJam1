@@ -14,8 +14,8 @@ export class UI {
 		this.tablet = null;
 		this.commands = [];
 
-		this.tabletTexture = new TypeableTexture("../data/models/ui/tablet.png", 128, 128, 32, 32, 4);
-		this.billboardTexture = new TypeableTexture("../data/models/ui/billboard.png", 512, 256, 48, 48, 26);
+		this.tabletTexture = new TypeableTexture("./data/models/ui/tablet.png", 128, 128, 32, 32, 4);
+		this.billboardTexture = new TypeableTexture("./data/models/ui/billboard.png", 512, 256, 48, 48, 26);
 
 		this.INPUT_MODES = {
 			locked: 0,
@@ -53,7 +53,7 @@ export class UI {
 
 	async load () {
 		// Load the model
-		let gltf = await loadGLTF("../data/models/ui/tablet.glb", this.tabletTexture);
+		let gltf = await loadGLTF("./data/models/ui/tablet.glb", this.tabletTexture);
 		this.tablet = gltf.scene;
 		this.tablet.position.set(9, 1, 0);
 		this.tablet.rotation.copy(UI_ORIENTATION);
@@ -80,7 +80,7 @@ export class UI {
 		// await button.load();
 		// this.scene.add(button.scene);
 
-		gltf = await loadGLTF("../data/models/ui/billboard.glb", this.billboardTexture);
+		gltf = await loadGLTF("./data/models/ui/billboard.glb", this.billboardTexture);
 		this.billboard = gltf.scene;
 		this.billboard.position.set(5, 5, 0);
 		this.billboard.scale.set(0, 0, 0);

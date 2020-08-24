@@ -3,17 +3,17 @@ import {Character, FACING} from "./basecharacter.js";
 
 
 class Prophet extends Character {
-	gltfUrl = "../data/models/characters/prophet.glb";
+	gltfUrl = "./data/models/characters/prophet.glb";
 }
 
 
 class Follower extends Character {
-	gltfUrl = "../data/models/characters/follower.glb";
+	gltfUrl = "./data/models/characters/follower.glb";
 }
 
 
 class Pride extends Character {
-	gltfUrl = "../data/models/characters/pride.glb";
+	gltfUrl = "./data/models/characters/pride.glb";
 
 	async load(x, y) {
 			let scene = await super.load(x, y);
@@ -35,7 +35,7 @@ class Pride extends Character {
 
 
 class Gluttony extends Character {
-	gltfUrl = "../data/models/characters/gluttony.glb";
+	gltfUrl = "./data/models/characters/gluttony.glb";
 	size = 2;
 }
 

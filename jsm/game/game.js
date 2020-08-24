@@ -98,7 +98,7 @@ export class SevenSinsGame {
 
 		// Load audio
 		window.addEventListener('click', () => {
-			this.loadAudio("../data/music/exodus_flutes.mp3");
+			this.loadAudio("./data/music/exodus_flutes.mp3");
 		}, {once: true})
 
 		// Start the render loop
@@ -107,7 +107,7 @@ export class SevenSinsGame {
 
 	loadLevel(id) {
 		this.level = new Level();
-		this.level.load("../data/levels/" + id + ".json").then(scene => {
+		this.level.load("./data/levels/" + id + ".json").then(scene => {
 			this.rootScene.add(scene);
 			this.level.runLevelRoutine(this.ui).then(proceed => {
 				this.rootScene.remove(scene);

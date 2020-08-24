@@ -7,7 +7,7 @@ export class UIButton {
 	constructor(position, text, activeText, keyCodes, onclick) {
 		this.scene = new THREE.Scene();
 		this.initialPosition = position;
-		this.texture = new TypeableTexture("../data/models/ui/button.png", 16, 16);
+		this.texture = new TypeableTexture("./data/models/ui/button.png", 16, 16);
 		this.character = text;
 		this.activeCharacter = activeText;
 		this.keyCodes = keyCodes;
@@ -23,7 +23,7 @@ export class UIButton {
 	}
 
 	async load() {
-		const gltf = await loadGLTF("../data/models/ui/button.glb", this.texture);
+		const gltf = await loadGLTF("./data/models/ui/button.glb", this.texture);
 		this.scene = gltf.scene;
 		this.scene.position.set(this.initialPosition[0], this.initialPosition[1], 0);
 		this.scene.userData.button = this;

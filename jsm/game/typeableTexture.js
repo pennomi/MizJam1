@@ -46,7 +46,7 @@ export class TypeableTexture extends THREE.CanvasTexture {
 		this.backgroundImage = document.createElement("img");
 		this.backgroundImage.src = backgroundImageUrl;
 		this.fontImage = document.createElement("img");
-		this.fontImage.src = "../data/models/ui/font.png";
+		this.fontImage.src = "./data/models/ui/font.png";
 
 		this.startX = startX;
 		this.startY = startY;
