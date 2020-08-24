@@ -182,7 +182,12 @@ export class Level {
 
 	async handleIntroductionMode(ui) {
 		await ui.showBillboard(this.name, this.startText);
-		await sleep(3.0);
+		await sleep(0.25);
+		await new Promise(resolve => {
+			window.addEventListener('click', resolve, {once: true});
+			window.addEventListener('keydown', resolve, {once: true});
+			setTimeout(resolve, 10000);
+		});
 		await ui.hideBillboard();
 	}
 
@@ -228,7 +233,12 @@ export class Level {
 	async handleFailure(ui, failureMessage) {
 		await sleep(0.75);
 		await ui.showBillboard("Failure", failureMessage);
-		await sleep(5.0);
+		await sleep(0.25);
+		await new Promise(resolve => {
+			window.addEventListener('click', resolve, {once: true});
+			window.addEventListener('keydown', resolve, {once: true});
+			setTimeout(resolve, 10000);
+		});
 		await ui.hideBillboard();
 		this.running = false; // set this after they decide to retry
 	}
@@ -236,7 +246,12 @@ export class Level {
 	async handleSuccess(ui) {
 		await sleep(0.75);
 		await ui.showBillboard("Success", this.completeText);
-		await sleep(5.0);
+		await sleep(0.25);
+		await new Promise(resolve => {
+			window.addEventListener('click', resolve, {once: true});
+			window.addEventListener('keydown', resolve, {once: true});
+			setTimeout(resolve, 10000);
+		});
 		await ui.hideBillboard();
 		this.running = false;
 		return true; // return false if they opt to retry the level?
