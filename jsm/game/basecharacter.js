@@ -123,6 +123,10 @@ export class Character {
 			throw Error("Invalid command given: `" + command + "`");
 		}
 		await this.moveGravity(level);
+		await this.moveGravity(level);
+		await this.moveGravity(level);
+		await this.moveGravity(level);
+		await this.moveGravity(level);
 		return moved;
 	}
 
