@@ -2,9 +2,9 @@
   "name": "Level 1",
   "startText": "As a fledgeling god, you must direct your newly chosen Prophet to the sacred shrine in the foothills.",
   "completeText": "The Prophet has received your revelation and the tablets to be inscribed with your will!",
-  "tiles": "111111\n100001\n101111\n100001\n111101\n120001\n111111",
+  "tiles": "0000000000\n0000000000\n00B00B0000\n00BBBB0000\n000bb00000\n00LBBL0000\n00LBBL000G\n00LBBL0001\n1111111111\n1111111111\n1111111111",
   "characters": [
-    {"type": "prophet", "position": [4, 2]}
+    {"type": "prophet", "position": [0, 8]}
   ],
   "nextLevel": "level2"
 }

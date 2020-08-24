@@ -65,7 +65,7 @@ export class Level {
 		return this.scene;
 	}
 
-	setUpCamera(camera, offset = 1.0) {
+	setUpCamera(camera, offset = 0.8) {
 		const box = new THREE.BoxHelper(this.scene);
 		box.geometry.computeBoundingSphere();
 		const sphere = box.geometry.boundingSphere;

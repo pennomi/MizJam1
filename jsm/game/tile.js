@@ -77,8 +77,12 @@ export const TILE_TYPES = {
 	1: new Tile("Ground", [19, 21], {
 		blocking: true,
 	}),
-	2: new Tile("Goal", [29, 9], {}),
-	3: new Tile("Ladder", [21, 20], {
+	B: new Tile("Brick", [10, 4], {
+		blocking: true,
+	}),
+	b: new Tile("Brick (background)", [10, 3], {}),
+	G: new Tile("Goal", [29, 9], {}),
+	L: new Tile("Ladder", [21, 20], {
 		climbable: true,
 	}),
 	4: new Tile("Water", [7, 21], {
