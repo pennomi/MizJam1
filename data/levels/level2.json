@@ -2,9 +2,9 @@
   "name": "Level 2",
   "startText": "Guide your chosen ones over a mysterious burial ground, rife with traps.",
   "completeText": "From the final grave, your people collect the ceremonial vestments to be worn by your true prophet!",
-  "tiles": "111111111111\n100000000001\n100000000001\n100100000021\n111111101111\n111111141111\n111111111111",
+  "tiles": "000000000000\n000000000000\n000000000000\n000000000000\n000000000000\nx0xX0Xx00xxG\nSSSSSSS4SSSS\nSSSSSSSUSSSS\nSSSSSSSSSSSS\nSSSSSSSSSSSS",
   "characters": [
-    {"type": "prophet", "position": [1, 4]}
+    {"type": "prophet", "position": [0, 6]}
   ],
   "nextLevel": "level3"
 }

@@ -81,6 +81,16 @@ export const TILE_TYPES = {
 		blocking: true,
 	}),
 	b: new Tile("Brick (background)", [10, 3], {}),
+	S: new Tile("Spooky Ground", [2, 21], {
+		blocking: true,
+	}),
+	U: new Tile("Spooky Ground Skull", [34, 9], {
+		blocking: true,
+	}),
+	X: new Tile("Gravestone", [0, 12], {
+		blocking: true,
+	}),
+	x: new Tile("Gravestone (background)", [1, 7], {}),
 	G: new Tile("Goal", [29, 9], {}),
 	L: new Tile("Ladder", [21, 20], {
 		climbable: true,
