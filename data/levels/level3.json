@@ -1,11 +1,11 @@
 {
   "name": "Level 3",
-  "startText": "Instruct the gluttonous priest through the village in search of ingredients for a ceremonial feast.",
+  "startText": "Instruct the gluttonous priest through the city in search of ingredients for a ceremonial feast.",
   "completeText": "The feast is complete! Your followers are now prepared for the trials ahead!",
-  "tiles": "111111111111111\n100000000000001\n100000000000001\n100300000000001\n100311100000001\n100300000500021\n111111001110111\n111111441114111\n111111111111111\n111111111111111",
+  "tiles": "111111111111\n100000000001\n100000000001\n100000000051\n100000550551\n11L011111111\n11L011111111\n11L000001051\n10L000000G51\n111111111111\n111111111111",
   "characters": [
-    {"type": "follower", "position": [1, 6]},
-    {"type": "prophet", "position": [2, 6], "name": "Abrahuzelah"}
+    {"type": "prophet", "position": [5, 9]},
+    {"type": "gluttony", "position": [6, 9]}
   ],
   "nextLevel": "level4"
 }

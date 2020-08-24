@@ -77,6 +77,9 @@ export const TILE_TYPES = {
 	1: new Tile("Ground", [19, 21], {
 		blocking: true,
 	}),
+	W: new Tile("Wood", [13, 7], {
+		blocking: true,
+	}),
 	B: new Tile("Brick", [10, 4], {
 		blocking: true,
 	}),

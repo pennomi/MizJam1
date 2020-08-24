@@ -2,7 +2,7 @@
   "name": "Level 5",
   "startText": "Teach your people to avoid the treacherous acid pools.",
   "completeText": "They safely make camp on solid ground and gather 'round the fire, singing your praises!",
-  "tiles": "1111111111111\n1000000000001\n1000000001001\n1000000001001\n1500000001201\n1111111111111",
+  "tiles": "1111111111111\n1000000000001\n1000000001001\n1000000001001\n1500000001G01\n1111111111111",
   "characters": [
     {"type": "follower", "position": [3, 5]},
     {"type": "prophet", "position": [4, 5]},
