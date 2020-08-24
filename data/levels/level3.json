@@ -1,6 +1,6 @@
 {
   "name": "Level 3",
-  "startText": "Instruct the gluttonous priest through the city in search of ingredients for a ceremonial feast.",
+  "startText": "Distract the gluttonous priest so your followers can gather ingredients for a ceremonial feast.",
   "completeText": "The feast is complete! Your followers are now prepared for the trials ahead!",
   "tiles": "111111111111\n100000000001\n100000000001\n100000000051\n100000550551\n11L011111111\n11L011111111\n11L000001051\n10L000000G51\n111111111111\n111111111111",
   "characters": [

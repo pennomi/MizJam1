@@ -1,11 +1,11 @@
 {
   "name": "Level 7",
-  "startText": "Guide your followers through the hidden, winding labyrinth.",
-  "completeText": "Your Prophet emerges in the throne room of an overgrown, but unmistakably opulent, palace!",
-  "tiles": "111111111\n100000001\n150000001\n111101111\n111101111\n111101111\n110000011\n110000021\n111111111",
+  "startText": "Send your devotees into the wilderness to discover a location for your temple.",
+  "completeText": "Here, your faithful spend their strength, riches, and years constructing a magnificent temple to honor their merciful god!\n\nYou win the game.",
+  "tiles": "0000000000\n1000000001\n1000000001\n1114114111\n1111111111\n1111100001\n1111001101\n1110011001\n110011G011\n1111111111\n1111111111",
   "characters": [
-    {"type": "prophet", "position": [7, 3], "name": "Abrahuzelah"},
-    {"type": "gluttony", "position": [4, 8], "name": "Gluttony"}
+    {"type": "prophet", "position": [3, 9]},
+    {"type": "follower", "position": [1, 3]}
   ],
-  "nextLevel": "level8"
+  "nextLevel": "level1"
 }
