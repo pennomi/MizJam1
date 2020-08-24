@@ -2,10 +2,12 @@
   "name": "Level 4",
   "startText": "Send your people across the desert dunes.",
   "completeText": "They survived the scorching sun and now enjoy the refreshing waters of an oasis!",
-  "tiles": "1111111111\n1000100001\n1110101111\n1000100001\n1011111101\n10000G0001\n1111111111",
+  "tiles": "00000000000000\n00000000000000\n00000000000000\n00000000000000\n00000000000000\n0000000110000G\n11100111110011\n11111111110011\n11111111111111\n11111111111111",
   "characters": [
-    {"type": "pride", "position": [1, 2]},
-    {"type": "prophet", "position": [8, 2], "name": "Abrahuzelah"}
+    {"type": "follower", "position": [1, 6]},
+    {"type": "follower", "position": [2, 6]},
+    {"type": "follower", "position": [3, 7]},
+    {"type": "prophet", "position": [4, 7]}
   ],
   "nextLevel": "level5"
 }
