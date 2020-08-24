@@ -1,11 +1,10 @@
 {
   "name": "Level 6",
-  "startText": "Lead your acolytes through the cave, dodging stalactites and bottomless pools.",
-  "completeText": "They've found enlightenment in the darkness, and are prepared to lead their civilization in the way of your light!",
-  "tiles": "11111111111111\n10000000500001\n10000001101001\n10000010000001\n10000000000001\n111100000000G1\n11111111000111\n11111111000111\n11111111010111",
+  "startText": "Lead the rebellious king through a grueling ritual to cleanse his sins.",
+  "completeText": "He doesn't seem very repentant, but he is now fit to rule your chosen people!",
+  "tiles": "111111111\n100000001\n150000001\n111101111\n111101111\n111101111\n110000011\n110000021\n111111111",
   "characters": [
-    {"type": "prophet", "position": [1, 5], "name": "Abrahuzelah"},
-    {"type": "gluttony", "position": [2, 5], "name": "Gluttony"}
+    {"type": "pride", "position": [7, 3], "name": "Abrahuzelah"}
   ],
   "nextLevel": "level7"
 }
